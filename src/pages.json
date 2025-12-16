@@ -1,0 +1,457 @@
+{
+  "easycom": {
+    "autoscan": true,
+    // 注意一定要放在custom里，否则无效，https://ask.dcloud.net.cn/question/131175
+    "custom": {
+      "^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^hws-([^-].*)": "@/components/hws/hws-$1.vue"
+    }
+  },
+  "pages": [
+    //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/login/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/login/register",
+      "style": {
+        "navigationBarTitleText": "",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/plantLibrary/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/diseaseRecords/diseaseRecords",
+      "style": {
+        "navigationBarTitleText": "诊断记录", //页面头部标题
+        "navigationStyle": "custom",
+        "enablePullDownRefresh": true,
+        "app-plus": {
+          "bounce": "none" // 将回弹属性关掉
+        }
+      }
+    },
+
+    {
+      "path": "pages/shop/index",
+      "style": {
+        "navigationBarTitleText": "商城中心", //页面头部标题
+        "navigationStyle": "custom",
+        "enablePullDownRefresh": false,
+        "app-plus": {
+          "bounce": "none" // 将回弹属性关掉
+        }
+      }
+    },
+    {
+      "path": "pages/user/index",
+      "style": {
+        "navigationBarTitleText": "我的",
+        "enablePullDownRefresh": false,
+        "app-plus": {
+          "bounce": "none", // 将回弹属性关掉
+          "popGesture": "close"
+        }
+      }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "pages-plants", //分包所在路径
+      "pages": [
+        //页面数组
+        {
+          "path": "plants/addPlants/addPlants",
+          "style": {
+            "navigationBarTitleText": "添加植物", //页面头部标题
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/plantsDetail/plantsDetail",
+          "style": {
+            "navigationBarTitleText": "植物详情", //页面头部标题
+            "enablePullDownRefresh": false,
+            "navigationStyle": "custom",
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/plantWikiDetail/plantWikiDetail",
+          "style": {
+            "navigationBarTitleText": "植物库详情", //页面头部标题
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/plantLibraryDetailNew/index",
+          "style": {
+            "navigationBarTitleText": "", //页面头部标题
+            "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/plantsDiagnose/plantsDiagnose",
+          "style": {
+            "navigationBarTitleText": "植物诊断", //页面头部标题
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/sensorDevices/index",
+          "style": {
+            "navigationBarTitleText": "我的传感器", //页面头部标题
+            "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/diseaseRecordsDetail/diseaseRecordsDetail",
+          "style": {
+            "navigationBarTitleText": "诊断详情", //页面头部标题
+            // "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/deviceDetail/deviceDetail",
+          "style": {
+            "navigationBarTitleText": "设备详情", //页面头部标题
+            "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/productDetail/productDetail",
+          "style": {
+            "navigationBarTitleText": "商品详情", //页面头部标题
+            "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/cart/cart",
+          "style": {
+            "navigationBarTitleText": "购物车", //页面头部标题
+            // "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/orders/orders",
+          "style": {
+            "navigationBarTitleText": "我的订单", //页面头部标题
+            // "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/orderDetail/orderDetail",
+          "style": {
+            "navigationBarTitleText": "订单详情", //页面头部标题
+            // "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/checkout/checkout",
+          "style": {
+            "navigationBarTitleText": "确认订单", //页面头部标题
+            // "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/payment/payment",
+          "style": {
+            "navigationBarTitleText": "订单支付", //页面头部标题
+            // "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/addressList/addressList",
+          "style": {
+            "navigationBarTitleText": "地址列表", //页面头部标题
+            // "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/addressManagement/addressManagement",
+          "style": {
+            "navigationBarTitleText": "新建地址", //页面头部标题
+            // "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/diseaseLibrary/diseaseLibrary",
+          "style": {
+            "navigationBarTitleText": "植物病害库", //页面头部标题
+            // "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/diseaseDetail/diseaseDetail",
+          "style": {
+            "navigationBarTitleText": "病害详情", //页面头部标题
+            // "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/treatmentPackageDetail/treatmentPackageDetail",
+          "style": {
+            "navigationBarTitleText": "治疗包详情", //页面头部标题
+            // "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/treatmentRecords/treatmentRecords",
+          "style": {
+            "navigationBarTitleText": "我的治疗包", //页面头部标题
+            // "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/treatmentProgress/treatmentProgress",
+          "style": {
+            "navigationBarTitleText": "治疗进度", //页面头部标题
+            // "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/plantArticle/index",
+          "style": {
+            "navigationBarTitleText": "", //页面头部标题
+            "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/diseaseLibrary2/index",
+          "style": {
+            "navigationBarTitleText": "植物病害百科", //页面头部标题
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/diseaseDetail2/index",
+          "style": {
+            "navigationBarTitleText": "病害详情", //页面头部标题
+            "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/treatmentPlan/index",
+          "style": {
+            "navigationBarTitleText": "", //页面头部标题
+            "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/treatmentList/index",
+          "style": {
+            "navigationBarTitleText": "我的治疗本", //页面头部标题
+            "navigationStyle": "",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/myPlantDetail/index",
+          "style": {
+            "navigationBarTitleText": "", //页面头部标题
+            "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/addPlants2/index",
+          "style": {
+            "navigationBarTitleText": "添加植物", //页面头部标题
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/profile/index",
+          "style": {
+            "navigationBarTitleText": "添加植物", //页面头部标题
+            "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "tools/ai/AiDiagnose",
+          "style": {
+            "navigationBarTitleText": "AI智能诊断", //页面头部标题
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "智能养植",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#2ecc71",
+    "borderStyle": "black",
+    "backgroundColor": "#F8F8F8",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/tabBar/home.png",
+        "selectedIconPath": "static/tabBar/home-active.png",
+        "text": "首页"
+      },
+
+      {
+        "pagePath": "pages/plantLibrary/index",
+        "iconPath": "static/tabBar/library.png",
+        "selectedIconPath": "static/tabBar/library-active.png",
+        "text": "图鉴"
+      },
+
+      {
+        "pagePath": "pages/diseaseRecords/diseaseRecords",
+        "iconPath": "static/tabBar/device.png",
+        "selectedIconPath": "static/tabBar/device-active.png",
+        "text": "诊断"
+      },
+
+      {
+        "pagePath": "pages/shop/index",
+        "iconPath": "static/tabBar/shop.png",
+        "selectedIconPath": "static/tabBar/shop-active.png",
+        "text": "商城"
+      },
+
+      {
+        "pagePath": "pages/user/index",
+        "iconPath": "static/tabBar/mine.png",
+        "selectedIconPath": "static/tabBar/mine-active.png",
+        "text": "我的"
+      }
+    ]
+  }
+}
