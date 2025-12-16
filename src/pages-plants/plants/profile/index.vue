@@ -207,14 +207,14 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useStore } from 'vuex';
+import { useUserStore } from '@/stores/user';
 import projectConfig from '@/env.config.js';
 import vipModel from '@/components/model/vip-model.vue';
-import { logout, secureBind, wechatBind } from '@/apis/modules/common';
+import { logout, secureBind, wechatBind, getProfile as getProfileApi } from '@/apis/modules/common';
 import { deviceRelateUser } from '@/apis/modules/device';
 
 const emit = defineEmits(['back', 'logout', 'navigate']);
-const store = useStore();
+const userStore = useUserStore();
 
 // Safe Area
 const safeAreaTop = ref(44);
@@ -259,26 +259,15 @@ const profile = ref({});
 // Methods
 
 // 获取用户信息
-// Note: In Vue 3 setup, we don't have `this.$api`.
-// Assuming `getProfile` API function is imported or available globally.
-// I'll use a placeholder logic assuming you have an import for it similar to `logout`.
-// If `getProfile` is not imported, you need to import it: `import { getProfile } from '@/apis/modules/common';`
 const getProfile = () => {
-  // Assuming `getProfile` is imported from '@/apis/modules/common'
-  // If not, replace this call with your actual API call method.
-  // Example using the imported getProfile if it existed:
-  getProfile().then(res => {
-    store.commit('setProfile', res.data);
+  getProfileApi().then(res => {
+    userStore.setProfile(res.data);
     profile.value = res.data;
     avatarUrl.value = profile.value.avatar && projectConfig.baseUrl + profile.value.avatar;
     wxStatus.value = res.wxBind;
   }).catch(err => {
     uni.showToast({ title: err.msg || '获取用户信息失败', icon: 'none' });
   });
-
-  // For now, using a mock since the import wasn't strictly provided in the prompt snippet for getProfile
-  // You should uncomment the import and use the real API call.
-  console.log('Fetching profile...');
 };
 
 const handleExit = () => {
