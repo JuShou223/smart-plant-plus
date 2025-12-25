@@ -11,19 +11,21 @@
 
       <view class="px-6 py-4 flex justify-between items-center relative z-10 text-white"
         :style="{ paddingTop: safeAreaTop + 'px' }">
-        <button @click="onBack"
+        <!-- <button
           class="p-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors backdrop-blur-md m-0 leading-none border-none">
-          <text class="iconfont icon-lucide-chevron-left text-2xl text-white"></text>
-        </button>
+          <text class="leading-none iconfont icon-lucide-chevron-left text-2xl text-white"></text>
+        </button> -->
         <text class="font-bold text-lg">个人中心</text>
-        <button class="p-2 hover:bg-white/20 rounded-full transition-colors m-0 leading-none bg-transparent">
-          <text class="iconfont icon-lucide-settings text-2xl text-white"></text>
-        </button>
+        <!-- <button class="p-2 hover:bg-white/20 rounded-full transition-colors m-0 leading-none bg-transparent">
+          <text class="leading-none iconfont icon-lucide-settings text-2xl text-white"></text>
+        </button> -->
       </view>
 
       <view class="px-6 pt-2 flex items-center gap-4 relative z-10">
-        <view class="w-20 h-20 rounded-full border-4 border-white/30 shadow-xl overflow-hidden bg-white shrink-0"
+        <view
+          class="flex items-center justify-center w-20 h-20 rounded-full border-4 border-solid border-white/30 shadow-xl overflow-hidden bg-white shrink-0"
           @click="handleToAvatar">
+          <!-- <text class="leading-none iconfont icon-lucide-sprout text-2xl text-emerald-600 leading-none"></text> -->
           <image
             :src="avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200&auto=format&fit=crop'"
             mode="aspectFill" class="w-full h-full" />
@@ -32,7 +34,7 @@
           <text class="block text-2xl font-bold">{{ profile.nickName || 'Alex Gardener' }}</text>
           <view class="flex items-center gap-2 mt-1">
             <text
-              class="bg-emerald-700/50 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-bold border border-emerald-400/30"
+              class="bg-emerald-700/50 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-bold border border-solid border-emerald-400/30"
               @click="handleVipUpgrade">
               {{ isVipModel ? 'VIP会员' : 'LV.5 资深园丁' }}
             </text>
@@ -42,7 +44,7 @@
       </view>
     </view>
 
-    <view class="px-6 -mt-12 relative z-20 pb-24 space-y-6">
+    <view class="px-6 -mt-12 relative z-20 pb-4 space-y-6">
 
       <view class="bg-white rounded-2xl p-6 shadow-xl shadow-slate-200/50 flex justify-between items-center">
         <view class="text-center flex-1 border-r border-slate-100">
@@ -59,19 +61,19 @@
         </view>
       </view>
 
-      <view class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+      <view class="bg-white rounded-2xl p-5 shadow-sm border border-solid border-slate-100">
         <view class="flex justify-between items-center mb-4">
           <text class="font-bold text-slate-800 text-sm">我的订单</text>
           <view class="text-xs text-slate-400 flex items-center hover:text-emerald-600">
             <text>全部订单</text>
-            <text class="iconfont icon-lucide-chevron-right text-xs ml-0.5"></text>
+            <text class="leading-none iconfont icon-lucide-chevron-right text-xs ml-0.5"></text>
           </view>
         </view>
         <view class="flex justify-between px-2">
           <view v-for="(item, idx) in orderItems" :key="idx" class="flex flex-col items-center gap-2 group">
             <view
               class="w-10 h-10 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-colors relative">
-              <text class="iconfont text-xl" :class="item.iconClass"></text>
+              <text class="leading-none iconfont text-xl" :class="item.iconClass"></text>
               <view v-if="idx === 1"
                 class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white text-[10px] flex items-center justify-center rounded-full border-2 border-white">
                 1
@@ -82,87 +84,89 @@
         </view>
       </view>
 
-      <view class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <view @click="gotoRelateDevice"
-          class="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-slate-50 cursor-pointer">
+      <view class="bg-white rounded-2xl shadow-sm border border-solid border-slate-100 overflow-hidden">
+        <view @click="gotoAccount"
+          class="box-border w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-solid border-slate-50 cursor-pointer">
           <view class="flex items-center gap-3">
             <view class="p-2 bg-blue-50 text-blue-600 rounded-lg">
-              <text class="iconfont icon-lucide-activity text-xl"></text>
+              <text class="leading-none iconfont icon-lucide-user text-xl"></text>
             </view>
-            <text class="text-sm font-bold text-slate-700">关联设备</text>
+            <text class="text-sm font-bold text-slate-700">账号信息</text>
           </view>
-          <text class="iconfont icon-lucide-chevron-right text-base text-slate-400"></text>
+          <text class="leading-none iconfont icon-lucide-chevron-right text-base text-slate-400"></text>
         </view>
 
-        <view @click="openScan"
-          class="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-slate-50 cursor-pointer">
+        <view @click="gotoAddressList"
+          class="box-border w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-solid border-slate-50 cursor-pointer">
           <view class="flex items-center gap-3">
             <view class="p-2 bg-blue-50 text-blue-600 rounded-lg">
-              <text class="iconfont icon-lucide-scan text-xl"></text>
+              <text class="leading-none iconfont icon-lucide-map-pin text-xl"></text>
             </view>
-            <text class="text-sm font-bold text-slate-700">扫码关联</text>
+            <text class="text-sm font-bold text-slate-700">地址管理</text>
           </view>
-          <text class="iconfont icon-lucide-chevron-right text-base text-slate-400"></text>
+          <text class="leading-none iconfont icon-lucide-chevron-right text-base text-slate-400"></text>
         </view>
 
-        <view @click="onNavigate('DIAGNOSIS_HISTORY')"
-          class="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-slate-50 cursor-pointer">
+        <!-- <view @click="onNavigate('DIAGNOSIS_HISTORY')"
+          class="box-border w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-solid border-slate-50 cursor-pointer">
           <view class="flex items-center gap-3">
             <view class="p-2 bg-orange-50 text-orange-600 rounded-lg">
-              <text class="iconfont icon-lucide-clipboard-list text-xl"></text>
+              <text class="leading-none iconfont icon-lucide-clipboard-list text-xl"></text>
             </view>
             <text class="text-sm font-bold text-slate-700">植物诊断档案</text>
           </view>
-          <text class="iconfont icon-lucide-chevron-right text-base text-slate-400"></text>
-        </view>
+          <text class="leading-none iconfont icon-lucide-chevron-right text-base text-slate-400"></text>
+        </view> -->
 
         <view @click="gotoResetPsd"
-          class="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-slate-50 cursor-pointer">
+          class="box-border w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-solid border-slate-50 cursor-pointer">
           <view class="flex items-center gap-3">
             <view class="p-2 bg-purple-50 text-purple-600 rounded-lg">
-              <text class="iconfont icon-lucide-lock text-xl"></text>
+              <text class="leading-none iconfont icon-lucide-lock text-xl"></text>
             </view>
             <text class="text-sm font-bold text-slate-700">修改密码</text>
           </view>
-          <text class="iconfont icon-lucide-chevron-right text-base text-slate-400"></text>
+          <text class="leading-none iconfont icon-lucide-chevron-right text-base text-slate-400"></text>
         </view>
 
-        <view @click="handleBindWeChart"
-          class="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-slate-50 cursor-pointer">
+        <!-- <view @click="handleBindWeChart"
+          class="box-border w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-solid border-slate-50 cursor-pointer">
           <view class="flex items-center gap-3">
             <view class="p-2 bg-green-50 text-green-600 rounded-lg">
-              <text class="iconfont icon-lucide-link text-xl"></text>
+              <text class="leading-none iconfont icon-lucide-link text-xl"></text>
             </view>
             <text class="text-sm font-bold text-slate-700">{{ wxStatus ? '解绑微信' : '绑定微信' }}</text>
           </view>
-          <text class="iconfont icon-lucide-chevron-right text-base text-slate-400"></text>
-        </view>
+          <text class="leading-none iconfont icon-lucide-chevron-right text-base text-slate-400"></text>
+        </view> -->
 
-        <view class="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors cursor-pointer">
+        <!-- <view
+          class="box-border w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors cursor-pointer">
           <view class="flex items-center gap-3">
             <view class="p-2 bg-teal-50 text-teal-600 rounded-lg">
-              <text class="iconfont icon-lucide-help-circle text-xl"></text>
+              <text class="leading-none iconfont icon-lucide-help-circle text-xl"></text>
             </view>
             <text class="text-sm font-bold text-slate-700">帮助与反馈</text>
           </view>
-          <text class="iconfont icon-lucide-chevron-right text-base text-slate-400"></text>
-        </view>
+          <text class="leading-none iconfont icon-lucide-chevron-right text-base text-slate-400"></text>
+        </view> -->
+
       </view>
 
       <button @click="handleExit"
         class="w-full py-4 bg-slate-100 text-slate-500 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-rose-50 hover:text-rose-600 transition-colors m-0 border-none">
-        <text class="iconfont icon-lucide-log-out text-xl"></text>
+        <text class="leading-none iconfont icon-lucide-log-out text-xl"></text>
         <text>退出登录</text>
       </button>
 
-      <button @click="handleUnsubscribe"
+      <!-- <button @click="handleUnsubscribe"
         class="w-full py-4 bg-slate-50 text-slate-400 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-rose-50 hover:text-rose-600 transition-colors m-0 border-none mt-2">
-        <text class="iconfont icon-lucide-trash-2 text-xl"></text>
+        <text class="leading-none iconfont icon-lucide-trash-2 text-xl"></text>
         <text>注销账户</text>
-      </button>
+      </button> -->
 
       <text class="block text-center text-[10px] text-slate-300 pt-4 pb-4">
-        SmartGreen v1.2.0 • Build 20240320
+        猴卫士智能养植 v1.0.0 • Build 20251231
       </text>
     </view>
 
@@ -207,14 +211,14 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useStore } from 'vuex';
+import { useUserStore } from '@/stores/user';
 import projectConfig from '@/env.config.js';
 import vipModel from '@/components/model/vip-model.vue';
-import { logout, secureBind, wechatBind } from '@/apis/modules/common';
+import { logout, secureBind, wechatBind, getProfile as getProfileApi } from '@/apis/modules/common';
 import { deviceRelateUser } from '@/apis/modules/device';
 
 const emit = defineEmits(['back', 'logout', 'navigate']);
-const store = useStore();
+const userStore = useUserStore();
 
 // Safe Area
 const safeAreaTop = ref(44);
@@ -237,7 +241,7 @@ const orderItems = [
   { label: '待付款', iconClass: 'icon-lucide-credit-card' },
   { label: '待发货', iconClass: 'icon-lucide-package' },
   { label: '待收货', iconClass: 'icon-lucide-truck' },
-  { label: '待评价', iconClass: 'icon-lucide-message-square' },
+  { label: '待评价', iconClass: 'icon-lucide-message-circle' },
 ];
 
 // Reactive State
@@ -259,26 +263,15 @@ const profile = ref({});
 // Methods
 
 // 获取用户信息
-// Note: In Vue 3 setup, we don't have `this.$api`.
-// Assuming `getProfile` API function is imported or available globally.
-// I'll use a placeholder logic assuming you have an import for it similar to `logout`.
-// If `getProfile` is not imported, you need to import it: `import { getProfile } from '@/apis/modules/common';`
 const getProfile = () => {
-  // Assuming `getProfile` is imported from '@/apis/modules/common'
-  // If not, replace this call with your actual API call method.
-  // Example using the imported getProfile if it existed:
-  getProfile().then(res => {
-    store.commit('setProfile', res.data);
+  getProfileApi().then(res => {
+    userStore.setProfile(res.data);
     profile.value = res.data;
     avatarUrl.value = profile.value.avatar && projectConfig.baseUrl + profile.value.avatar;
     wxStatus.value = res.wxBind;
   }).catch(err => {
     uni.showToast({ title: err.msg || '获取用户信息失败', icon: 'none' });
   });
-
-  // For now, using a mock since the import wasn't strictly provided in the prompt snippet for getProfile
-  // You should uncomment the import and use the real API call.
-  console.log('Fetching profile...');
 };
 
 const handleExit = () => {
@@ -307,6 +300,10 @@ const handleAppSecureBind = () => {
     url: '/pagesB/user/secureBind'
   });
 };
+
+const gotoAddressList = () => {
+  uni.navigateTo({ url: '/pages-plants/plants/addressList/addressList' });
+}
 
 const gotoAccount = () => {
   uni.navigateTo({ url: '/pagesB/user/account' });
@@ -543,8 +540,8 @@ const onNavigate = (view) => emit('navigate', view);
 </script>
 
 <style scoped>
-/* Iconfont Helper */
-.iconfont {
+/* leading-none iconfont Helper */
+.leading-none iconfont {
   display: inline-block;
   line-height: 1;
 }

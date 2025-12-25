@@ -1,7 +1,7 @@
 <template>
-  <view class="pb-24 animate-fade-in bg-[#FAFAFA] min-h-screen relative font-sans">
+  <view class="pb-24 bg-[#FAFAFA] min-h-screen relative font-sans">
     <!-- 主界面内容 -->
-    <view>
+    <view class="animate-fade-in">
       <!-- Search Header -->
       <up-sticky customNavHeight="0">
         <!-- #ifndef MP-WEIXIN -->
@@ -11,24 +11,27 @@
         <up-navbar :fixed="false" title="" :height="0" bgColor="#FAFAFA" leftIcon="">
         </up-navbar>
         <!-- #endif -->
-        <hws-header>
-          <view class="z-30 bg-white/80 backdrop-blur-md border-b border-slate-100 box-border px-3">
+        <hws-header bgColor="#FAFAFA">
+          <view class="z-30 bg-white/80 backdrop-blur-md border-b border-solid border-slate-100 box-border px-3 pb-2">
             <view class="relative">
               <text
                 class="iconfont icon-lucide-search absolute left-3 top-1/2 -translate-y-1/2 text-base text-slate-400"></text>
               <input type="text" placeholder="搜索您心仪的植物..." v-model="searchQuery"
                 class="w-full box-border bg-slate-100 border-none rounded-xl px-[70rpx] text-sm focus:ring-2 focus:ring-emerald-500 transition-all h-10" />
+              <view v-if="searchQuery.trim()" @click="searchQuery = ''"
+                class="p-1 bg-slate-400 rounded-full iconfont icon-lucide-x absolute right-3 top-1/2 -translate-y-1/2 text-xs text-white leading-none">
+              </view>
             </view>
           </view>
         </hws-header>
         <!-- #ifndef MP-WEIXIN -->
-        <up-gap height="12" bgColor="#FAFAFA"></up-gap>
+        <!-- <up-gap height="12" bgColor="#FAFAFA"></up-gap> -->
         <!-- #endif -->
       </up-sticky>
-      <view class="pt-6 space-y-8">
+      <view class="pt-3 space-y-8">
 
         <!-- Carousel / Recommendation Section -->
-        <view v-if="activeFilter === '全部' && !searchQuery && difficultyFilter === 'all'">
+        <view v-if="!searchQuery.trim()">
 
           <!-- 1. Featured Collections (Carousel) -->
           <view class="relative mb-4">
@@ -36,8 +39,7 @@
               <text class="text-xl font-bold text-slate-800 tracking-tight">精选专题</text>
               <text class="text-xs text-slate-400 font-medium">向左滑动探索更多 →</text>
             </view>
-            <up-swiper duration="1000" interval="5000" circular :list="FEATURED_COLLECTIONS" @change="change"
-              @click="click" :height="swiperHeight">
+            <up-swiper duration="1000" interval="5000" circular :list="FEATURED_COLLECTIONS" :height="swiperHeight">
               <template v-slot:default="{ item }">
                 <view class="box-border w-[100vw] h-[56vw] px-3">
 
@@ -57,7 +59,7 @@
                       <text class="text-sm text-slate-300 line-clamp-2 mb-4 font-medium opacity-90 block">{{
                         item.subtitle }}</text>
                       <view
-                        class="bg-white/10 backdrop-blur-md border border-white/20 text-white py-2 px-4 rounded-xl text-xs font-bold flex items-center w-fit">
+                        class="bg-white/10 backdrop-blur-md border border-solid border-solid border-white/20 text-white py-2 px-4 rounded-xl text-xs font-bold flex items-center w-fit">
                         <text>浏览专题</text>
                         <text class="iconfont icon-lucide-arrow-right ml-1.5 text-xs"></text>
                       </view>
@@ -93,8 +95,8 @@
                     }}</text>
                   </view>
                   <view
-                    class="flex flex-col items-center bg-white/10 backdrop-blur-md border border-white/10 rounded-lg p-2 min-w-[70px]">
-                    <text class="text-[10px] text-amber-400 font-bold uppercase mb-0.5">Ends In</text>
+                    class="flex flex-col items-center bg-white/10 backdrop-blur-md border border-solid border-solid border-white/10 rounded-lg p-2 min-w-[70px]">
+                    <text class="text-[20rpx] text-amber-400 font-bold uppercase mb-0.5">Ends In</text>
                     <view class="flex items-center space-x-1 font-mono text-sm font-bold">
                       <text class="iconfont icon-lucide-timer text-xs"></text>
                       <text>{{ timeLeft.h }}:{{ String(timeLeft.m).padStart(2, '0') }}:{{ String(timeLeft.s).padStart(2,
@@ -113,7 +115,7 @@
                     <view class="w-6 h-6 rounded-full bg-amber-400 flex items-center justify-center">
                       <text class="text-slate-900 font-serif font-bold text-xs">S</text>
                     </view>
-                    <text class="text-[10px] text-amber-400/80 uppercase tracking-widest">{{ PLANT_OF_THE_MONTH.editor
+                    <text class="text-[20rpx] text-amber-400/80 uppercase tracking-widest">{{ PLANT_OF_THE_MONTH.editor
                     }}</text>
                   </view>
                 </view>
@@ -124,7 +126,7 @@
                     <view class="flex flex-col mb-1">
                       <text class="text-slate-500 text-xs line-through decoration-slate-500/50">¥{{
                         PLANT_OF_THE_MONTH.originalPrice }}</text>
-                      <text class="text-[10px] text-emerald-400 font-bold">Save 30%</text>
+                      <text class="text-[20rpx] text-emerald-400 font-bold">Save 30%</text>
                     </view>
                   </view>
                   <button
@@ -158,11 +160,11 @@
             <!-- <view class="flex space-x-4 px-6 pb-6"> -->
             <view class="px-3">
               <up-scroll-list>
-                <view v-for="(plant, idx) in TRENDING_LIST" :key="plant.id"
-                  class="flex-shrink-0 mx-3 box-border inline-block w-[480rpx] bg-white rounded-2xl p-3 border border-slate-100 shadow-sm relative group active:scale-95 transition-transform">
+                <view @click="handleToDetail(plant.id)" v-for="(plant, idx) in trendingList" :key="plant.id"
+                  class="flex-shrink-0 mx-3 box-border inline-block w-[480rpx] bg-white rounded-2xl p-3 border border-solid border-solid border-slate-100 shadow-sm relative group active:scale-95 transition-transform">
                   <!-- Rank Badge -->
                   <view
-                    class="absolute top-4 left-4 w-8 h-8 flex items-center justify-center rounded-full text-white font-serif font-bold text-lg shadow-lg z-20 border-2 border-white"
+                    class="absolute top-4 left-4 w-8 h-8 flex items-center justify-center rounded-full text-white font-serif font-bold text-lg shadow-lg z-20 border border-solid border-white"
                     :class="getRankClass(idx)">
                     <text v-if="idx <= 2"
                       class="iconfont icon-lucide-trophy text-yellow-500 text-xs absolute -top-3 hidden"></text>
@@ -214,16 +216,21 @@
           <view>
             <view class="flex items-center justify-between mb-3">
               <text class="font-bold text-lg text-slate-800">发现植物</text>
-              <view @click="isFilterOpen = true"
-                class="p-2 rounded-lg transition-colors flex items-center justify-center"
-                :class="difficultyFilter !== 'all' || sortBy !== 'recommended' ? 'bg-emerald-100 text-emerald-600' : 'bg-white text-slate-400'">
-                <text class="iconfont icon-lucide-filter text-base"></text>
-              </view>
+              <button @click="handleOpenFilter"
+                class="flex items-center gap-2 px-4 py-2 rounded-xl transition-all border-none m-0 leading-none"
+                :class="selectedDeepFilters.length > 0 ? 'bg-slate-900 text-white shadow-lg' : 'bg-slate-50 text-slate-500 border border-solid border-slate-100'">
+                <text class="iconfont icon-lucide-filter text-sm"></text>
+                <text class="text-xs font-bold uppercase tracking-widest">更多筛选</text>
+                <view v-if="selectedDeepFilters.length > 0"
+                  class="w-4 h-4 bg-emerald-500 text-white text-[8px] flex items-center justify-center rounded-full ml-1">
+                  {{ selectedDeepFilters.length }}
+                </view>
+              </button>
             </view>
 
             <scroll-view scroll-x class="whitespace-nowrap w-full" :show-scrollbar="false">
               <view class="flex space-x-2 pb-2 px-1">
-                <view v-for="filter in FILTERS" :key="filter" @click="activeFilter = filter"
+                <view v-for="filter in FILTERS" :key="filter" @click="handleFilterSimple(filter)"
                   class="inline-block px-4 py-2 rounded-full text-xs font-bold transition-all border" :class="activeFilter === filter
                     ? 'bg-slate-900 text-white border-slate-900 shadow-md'
                     : 'bg-white text-slate-600 border-slate-200'">
@@ -236,7 +243,7 @@
           <!-- Product Grid -->
           <view class="grid grid-cols-2 gap-3 sm:gap-6">
             <view v-for="plant in filteredPlants" :key="plant.id" @click="handleToDetail(plant.id)"
-              class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 flex flex-col h-full active:opacity-90 transition-opacity">
+              class="bg-white rounded-2xl overflow-hidden shadow-sm border border-solid border-solid border-slate-100 flex flex-col h-full active:opacity-90 transition-opacity">
               <!-- Image Area -->
               <view class="relative aspect-[4/5] overflow-hidden bg-slate-100 h-[360rpx]">
                 <image :src="plant.image" mode="aspectFill" class="w-full h-full" />
@@ -280,7 +287,7 @@
                 </view>
 
                 <!-- Footer Action -->
-                <view class="flex items-center justify-between mt-auto pt-2 border-t border-slate-50">
+                <view class="flex items-center justify-between mt-auto pt-2 border-t border-solid border-slate-50">
                   <view class="flex items-baseline space-x-0.5">
                     <text class="text-xs font-bold text-emerald-600">¥</text>
                     <text class="text-lg sm:text-xl font-bold text-emerald-700">{{ plant.price }}</text>
@@ -297,7 +304,7 @@
 
           <!-- End of list CTA -->
           <view v-if="filteredPlants.length > 0"
-            class="bg-emerald-50 border border-dashed border-emerald-200 rounded-2xl p-6 text-center">
+            class="bg-emerald-50 border border-solid border-solid border-dashed border-emerald-200 rounded-2xl p-6 text-center">
             <view class="flex justify-center mb-2">
               <text class="iconfont icon-lucide-leaf text-2xl text-emerald-300"></text>
             </view>
@@ -325,7 +332,7 @@
       <!-- Floating AI Consultant Button -->
       <view class="fixed bottom-24 right-6 z-40 animate-fade-in-up" @click="handleOpenAI">
         <view
-          class="group flex items-center justify-center bg-white/90 backdrop-blur-md border border-emerald-100 shadow-xl shadow-emerald-100/50 text-emerald-600 rounded-full p-3 transition-all duration-300 hover:pr-5 hover:bg-emerald-50 active:scale-95">
+          class="group flex items-center justify-center bg-white/90 backdrop-blur-md border border-solid border-solid border-emerald-100 shadow-xl shadow-emerald-100/50 text-emerald-600 rounded-full p-3 transition-all duration-300 hover:pr-5 hover:bg-emerald-50 active:scale-95">
           <view class="relative">
             <view
               class="absolute inset-0 bg-emerald-400 rounded-full blur opacity-0 group-hover:opacity-20 transition-opacity duration-500 animate-pulse">
@@ -337,13 +344,11 @@
       </view>
 
       <!-- Filter Bottom Sheet / Modal -->
-      <view v-if="isFilterOpen"
+      <!-- <view v-if="isFilterOpen"
         class="fixed top-0 w-[100vw] h-[100vh] z-50 flex items-end justify-center sm:items-center">
-        <!-- Backdrop -->
         <view class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" @click="isFilterOpen = false">
         </view>
 
-        <!-- Sheet Content -->
         <view
           class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 relative z-10 animate-fade-in-up shadow-2xl">
           <view class="flex items-center justify-between mb-6">
@@ -355,12 +360,11 @@
           </view>
 
           <view class="space-y-6">
-            <!-- Sort Section -->
             <view>
               <text class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 block">排序方式</text>
               <view class="grid grid-cols-2 gap-3">
                 <view v-for="opt in sortOptions" :key="opt.id" @click="sortBy = opt.id"
-                  class="py-3 px-4 rounded-xl text-sm font-bold border flex items-center justify-between transition-all"
+                  class="py-3 px-4 rounded-xl text-sm font-bold border border-solid border-solid flex items-center justify-between transition-all"
                   :class="sortBy === opt.id
                     ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
                     : 'border-slate-100 text-slate-600'">
@@ -370,12 +374,11 @@
               </view>
             </view>
 
-            <!-- Difficulty Section -->
             <view>
               <text class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 block">养护难度</text>
               <view class="flex space-x-3">
                 <view v-for="opt in difficultyOptions" :key="opt.id" @click="difficultyFilter = opt.id"
-                  class="flex-1 py-2 rounded-lg text-xs font-bold transition-all border flex items-center justify-center"
+                  class="flex-1 py-2 rounded-lg text-xs font-bold transition-all border border-solid border-solid flex items-center justify-center"
                   :class="difficultyFilter === opt.id
                     ? 'bg-slate-800 text-white border-slate-800'
                     : 'bg-white text-slate-500 border-slate-200'">
@@ -385,7 +388,6 @@
             </view>
           </view>
 
-          <!-- Footer Buttons -->
           <view class="mt-8 flex space-x-4">
             <button @click="resetFilters"
               class="flex-1 py-3.5 rounded-xl font-bold text-slate-500 bg-slate-100 hover:bg-slate-200 transition-colors text-sm">
@@ -397,19 +399,88 @@
             </button>
           </view>
         </view>
-      </view>
+      </view> -->
     </view>
+    <up-popup :show="isFilterOpen" mode="bottom">
+      <!-- Content -->
+      <view
+        class="bg-white w-full max-w-lg rounded-t-[3.5rem] relative z-10 animate-fade-in-up flex flex-col max-h-[92vh] shadow-2xl overflow-hidden border-t border-solid border-white/20">
+
+        <!-- 第一层：场景元切换 -->
+        <view class="p-8 pb-4 pt-6 sticky top-0 bg-white z-20">
+          <view class="flex items-center justify-between mb-4">
+            <text class="text-2xl font-black text-slate-900 tracking-tighter italic uppercase">高级筛选</text>
+            <button @click="isFilterOpen = false"
+              class="p-3 bg-slate-50 rounded-full text-slate-400 border-none m-0 flex items-center justify-center">
+              <text class="iconfont icon-lucide-x text-lg leading-none"></text>
+            </button>
+          </view>
+
+          <view class="flex p-1.5 bg-slate-100 rounded-2xl">
+            <view v-for="(cfg, key) in SCENE_CONFIGS" :key="key" @click="setActiveScene(key)"
+              class="flex-1 flex flex-col items-center py-3.5 rounded-xl transition-all duration-500"
+              :class="activeScene === key ? 'bg-white text-slate-900 shadow-xl' : 'text-slate-400'">
+              <!-- <text class="text-xs font-black uppercase tracking-widest block">{{ key }}</text> -->
+              <text class="text-[18rpx] font-bold opacity-50 mt-1 block">{{ cfg.label }}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 第二层：高密度标签矩阵 -->
+        <scroll-view scroll-y class="box-border px-8 space-y-4 pt-2 custom-scrollbar" style="height: 800rpx;">
+          <view v-for="(section, sIdx) in currentConfig.sections" :key="sIdx" class="animate-fade-in mb-4">
+            <view
+              class="text-[20rpx] font-black text-slate-300 uppercase tracking-[0.4em] mb-5 flex items-center gap-3">
+              <view class="w-1.5 h-4 rounded-full"
+                :class="activeScene === 'home' ? 'bg-emerald-500' : activeScene === 'office' ? 'bg-blue-500' : 'bg-purple-500'">
+              </view>
+              <text>{{ section.label }}</text>
+            </view>
+            <view class="grid grid-cols-3 gap-2.5">
+              <button v-for="item in section.items" :key="item" @click="toggleFilter(item)"
+                class="py-4 px-2 rounded-2xl text-[20rpx] font-black transition-all text-center leading-tight border border-solid m-0 flex items-center justify-center"
+                :class="selectedDeepFilters.includes(item)
+                  ? 'bg-slate-900 text-white border-slate-900 shadow-xl scale-95'
+                  : 'bg-slate-50 text-slate-500 border-transparent hover:bg-slate-100'">
+                {{ item }}
+              </button>
+            </view>
+          </view>
+        </scroll-view>
+
+        <!-- 底部操作 -->
+        <view class="p-8 pt-4 border-t border-solid border-slate-50 bg-white sticky bottom-0 z-20 flex gap-4">
+          <button @click="selectedDeepFilters = []"
+            class="px-6 text-[20rpx] font-black text-slate-300 bg-transparent border-none m-0 flex items-center justify-center uppercase tracking-[0.3em] italic">
+            清除
+          </button>
+          <button @click="handleConfirmFilter"
+            class="flex-1 py-5 rounded-[2rem] bg-slate-900 text-white font-black text-sm shadow-2xl flex items-center justify-center gap-3 active:scale-[0.96] transition-all uppercase tracking-widest italic border-none m-0">
+            <text>确认筛选</text>
+            <text class="iconfont icon-lucide-arrow-right text-base"></text>
+          </button>
+        </view>
+      </view>
+    </up-popup>
   </view>
 </template>
 
 <script setup>
 import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
 import expertPicksSection from './expertPicksSection.vue';
+// import {
+//   getPlantDatabase,
+//   searchPlants,
+// } from '@/apis/modules/plants';
+// import { MOCK_LIBRARY, SCENE_CONFIGS } from './mock';
+import { usePlantLibrary, SCENE_CONFIGS } from '@/hooks/usePlantLibrary'
+import { onLoad, onShow, onHide, onPullDownRefresh, onReachBottom } from '@dcloudio/uni-app';
+
 
 // --- MOCK DATA ---
 const MOCK_PRODUCTS = [
   {
-    id: 'lib-1',
+    id: '1061',
     name: '天堂鸟',
     scientificName: 'Strelitzia Nicolai',
     price: 128,
@@ -423,7 +494,7 @@ const MOCK_PRODUCTS = [
     viewers: 45
   },
   {
-    id: 'lib-2',
+    id: '1062',
     name: '爱心球兰',
     scientificName: 'Hoya Kerrii',
     price: 39,
@@ -437,7 +508,7 @@ const MOCK_PRODUCTS = [
     viewers: 128
   },
   {
-    id: 'lib-3',
+    id: '1063',
     name: '宝莲灯',
     scientificName: 'Medinilla Magnifica',
     price: 299,
@@ -451,7 +522,7 @@ const MOCK_PRODUCTS = [
     viewers: 32
   },
   {
-    id: 'lib-4',
+    id: '1064',
     name: '镜面草',
     scientificName: 'Pilea Peperomioides',
     price: 58,
@@ -465,7 +536,7 @@ const MOCK_PRODUCTS = [
     viewers: 67
   },
   {
-    id: 'lib-5',
+    id: '1065',
     name: '油画竹芋',
     scientificName: 'Calathea Fusion White',
     price: 88,
@@ -479,7 +550,7 @@ const MOCK_PRODUCTS = [
     viewers: 29
   },
   {
-    id: 'lib-6',
+    id: '1066',
     name: '橄榄树',
     scientificName: 'Olea Europaea',
     price: 158,
@@ -508,6 +579,12 @@ const PLANT_OF_THE_MONTH = {
 };
 
 const TRENDING_LIST = [MOCK_PRODUCTS[1], MOCK_PRODUCTS[0], MOCK_PRODUCTS[3], MOCK_PRODUCTS[5]];
+const trendingList = computed(() => {
+  return library.value.filter(item => {
+    return ['1024', '1026', '1023', '1030'].includes(item.id)
+  }).sort((a, b) => b.viewers - a.viewers)
+})
+
 
 const FEATURED_COLLECTIONS = [
   {
@@ -523,7 +600,7 @@ const FEATURED_COLLECTIONS = [
     intro: "在这个钢筋水泥的城市里，我们都渴望拥有一片属于自己的绿色避难所...",
     content: ["首先推荐的是极具气质的橄榄树...", "如果你想要更热带...", "而对于追求独特花期体验..."],
     tips: ["大型植物通常需要...", "定期擦拭叶片...", "搭配编织篮..."],
-    linkedPlantIds: ['lib-6', 'lib-1', 'lib-3']
+    linkedPlantIds: ['1066', '1061', '1063']
   },
   {
     id: 2,
@@ -537,7 +614,7 @@ const FEATURED_COLLECTIONS = [
     intro: "工作压力大的时候...",
     content: ["多肉植物是桌面绿植的首选...", "如果你喜欢更有生机...", "而想要给沉闷的桌面一点色彩..."],
     tips: ["桌面通常比较干燥...", "小心不要把水浇到电脑...", "选择底部有托盘的花盆..."],
-    linkedPlantIds: ['lib-2', 'lib-4', 'lib-5']
+    linkedPlantIds: ['1062', '1064', '1065']
   },
   {
     id: 3,
@@ -560,11 +637,11 @@ const FEATURED_COLLECTIONS = [
       "避免使用化肥和杀虫剂，选择天然有机肥料。",
       "将植物放置在稳固的花盆中，防止被宠物打翻。"
     ],
-    linkedPlantIds: ['lib-4', 'lib-5', 'lib-2']
+    linkedPlantIds: ['1064', '1065', '1062']
   },
 ];
 
-const FILTERS = ['全部', '新手友好', '宠物安全', '净化空气', '耐阴', '开花'];
+const FILTERS = ['全部', '招财纳福', '步步高升', '接待大厅', '净化甲醛', '宠物安全'];
 
 const sortOptions = [
   { id: 'recommended', label: '综合推荐' },
@@ -580,11 +657,21 @@ const difficultyOptions = [
   { id: 'hard', label: '困难' },
 ];
 
+const { library, loadLibrary } = usePlantLibrary()
+
+
 // --- STATE ---
 const activeCollection = ref(null);
 const activeFilter = ref('全部');
 const searchQuery = ref('');
+const queryParams = reactive({
+  pageNum: 1,
+  pageSize: 20,
+})
 const isFilterOpen = ref(false);
+const activeScene = ref('home');
+const selectedDeepFilters = ref([]);
+const selectedDeepFiltersUnconfirm = ref([])
 const sortBy = ref('recommended');
 const difficultyFilter = ref('all');
 const timeLeft = reactive({ h: 47, m: 59, s: 59 });
@@ -592,9 +679,106 @@ let timer = null;
 const loading = ref(true);
 const screenWidth = ref(0)
 const swiperHeight = ref(0)
+const loadStatus = ref('loadmore')
+const plantList = ref([])
+// 获取当前场景配置
+const currentConfig = computed(() => SCENE_CONFIGS[activeScene.value]);
+
+// 切换筛选标签
+const toggleFilter = (tag) => {
+  const index = selectedDeepFiltersUnconfirm.value.indexOf(tag);
+  if (index > -1) {
+    selectedDeepFiltersUnconfirm.value.splice(index, 1);
+  } else {
+    selectedDeepFiltersUnconfirm.value.push(tag);
+  }
+};
+
+// 切换场景
+const setActiveScene = (key) => {
+  activeScene.value = key;
+  selectedDeepFiltersUnconfirm.value = [];
+};
+
+const handleFilterSimple = (filter) => {
+  activeFilter.value = filter;
+  selectedDeepFilters.value = [];
+}
+
+const handleOpenFilter = () => {
+  selectedDeepFiltersUnconfirm.value = selectedDeepFilters.value
+  isFilterOpen.value = true
+}
+
+const handleConfirmFilter = () => {
+  activeFilter.value = '全部';
+  isFilterOpen.value = false
+  selectedDeepFilters.value = selectedDeepFiltersUnconfirm.value
+}
+
+// 根据销量排序的 Top 植物
+const trendingPlants = computed(() => {
+  return [...MOCK_LIBRARY].sort((a, b) => (b.sales || 0) - (a.sales || 0)).slice(0, 10);
+});
+
+// 筛选后的植物列表
+const filteredPlants = computed(() => {
+  let selectTags = []
+  if (selectedDeepFilters.value.length > 0) {
+    selectTags = selectedDeepFilters.value
+  } else if (activeFilter.value !== '全部') {
+    selectTags = [activeFilter.value]
+  }
+  let result = library.value.filter(p => {
+    // 场景匹配逻辑
+    // const sceneMap = { home: '家庭', office: '公司', store: '商铺' };
+    // const matchesScene = p.tags.includes(sceneMap[activeScene.value]);
+
+    // if (!matchesScene) return false;
+
+    // 如果没有选深度标签，默认显示所有场景下的植物
+
+    if (selectTags.length === 0) return true
+    // 只要包含至少一个标签就显示（OR逻辑），后续通过排序区分优先级
+    return selectTags.some(f => p.tags.includes(f));
+  });
+
+  result = result.filter(p => {
+    if (searchQuery.value.trim()) {
+      return p.alias.includes(searchQuery.value) || p.name.includes(searchQuery.value) || p.scientificName.toLowerCase().includes(searchQuery.value.toLowerCase());
+    } else {
+      return true
+    }
+  })
+
+  // 如果有筛选标签，进行排序：匹配标签越多的排在越前面
+  if (selectTags.length > 0) {
+    result = result.sort((a, b) => {
+      const getMatchCount = (plant) => {
+        return selectTags.reduce((count, tag) => {
+          return count + (plant.tags.includes(tag) ? 1 : 0);
+        }, 0);
+      };
+
+      const scoreA = getMatchCount(a);
+      const scoreB = getMatchCount(b);
+
+      // 匹配数降序排列
+      if (scoreB !== scoreA) {
+        return scoreB - scoreA;
+      }
+
+      // 匹配数相同时，按销量降序作为二级排序（保持热门的在前面）
+      return (b.sales || 0) - (a.sales || 0);
+    });
+  }
+
+  return result;
+});
+
 
 // --- LIFECYCLE ---
-onMounted(() => {
+onLoad(() => {
   loading.value = false;
   console.log('Plant Library Mounted');
   // 同步获取系统信息
@@ -607,46 +791,106 @@ onMounted(() => {
   console.log('屏幕宽度:', screenWidth.value)
   console.log('48%屏幕宽度:', swiperHeight.value)
 
-  timer = setInterval(() => {
-    if (timeLeft.s > 0) {
-      timeLeft.s--;
-    } else if (timeLeft.m > 0) {
-      timeLeft.m--;
-      timeLeft.s = 59;
-    } else if (timeLeft.h > 0) {
-      timeLeft.h--;
-      timeLeft.m = 59;
-      timeLeft.s = 59;
-    }
-  }, 1000);
-});
+  loadLibrary()
 
-onUnmounted(() => {
-  if (timer) clearInterval(timer);
-});
+  // loadPlantsByDifficulty()
+
+  // timer = setInterval(() => {
+  //   if (timeLeft.s > 0) {
+  //     timeLeft.s--;
+  //   } else if (timeLeft.m > 0) {
+  //     timeLeft.m--;
+  //     timeLeft.s = 59;
+  //   } else if (timeLeft.h > 0) {
+  //     timeLeft.h--;
+  //     timeLeft.m = 59;
+  //     timeLeft.s = 59;
+  //   }
+  // }, 1000);
+})
+
+// onUnmounted(() => {
+//   if (timer) clearInterval(timer);
+// });
 
 // --- COMPUTED ---
-const filteredPlants = computed(() => {
-  let result = MOCK_PRODUCTS.filter(plant => {
-    const matchesSearch = plant.name.includes(searchQuery.value) || plant.scientificName.toLowerCase().includes(searchQuery.value.toLowerCase());
-    const matchesTag = activeFilter.value === '全部' || plant.tags.includes(activeFilter.value);
-    const matchesDifficulty = difficultyFilter.value === 'all' || plant.difficulty === difficultyFilter.value;
-    return matchesSearch && matchesTag && matchesDifficulty;
-  });
+// const filteredPlants = computed(() => {
+//   let result = MOCK_PRODUCTS.filter(plant => {
+//     const matchesSearch = plant.name.includes(searchQuery.value) || plant.scientificName.toLowerCase().includes(searchQuery.value.toLowerCase());
+//     const matchesTag = activeFilter.value === '全部' || plant.tags.includes(activeFilter.value);
+//     const matchesDifficulty = difficultyFilter.value === 'all' || plant.difficulty === difficultyFilter.value;
+//     return matchesSearch && matchesTag && matchesDifficulty;
+//   });
 
-  result.sort((a, b) => {
-    switch (sortBy.value) {
-      case 'price_asc': return a.price - b.price;
-      case 'price_desc': return b.price - a.price;
-      case 'rating': return b.rating - a.rating;
-      default: return 0;
-    }
-  });
+//   result.sort((a, b) => {
+//     switch (sortBy.value) {
+//       case 'price_asc': return a.price - b.price;
+//       case 'price_desc': return b.price - a.price;
+//       case 'rating': return b.rating - a.rating;
+//       default: return 0;
+//     }
+//   });
 
-  return result;
-});
+//   return result;
+// });
 
 // --- METHODS ---
+// 根据难度加载植物
+const loadPlantsByDifficulty = async () => {
+  // if (this.loading) return;
+  if (loadStatus.value === 'loading') return
+  try {
+    // 如果是加载更多,显示加载状态
+    if (queryParams.pageNum > 1) {
+      loadStatus.value = 'loading';
+    }
+
+    const response = await getPlantDatabase({
+      ...queryParams
+    });
+
+    if (response.code === 200 && response.rows) {
+      const newData = response.rows || [];
+
+      if (queryParams.pageNum === 1) {
+        plantList.value = newData;
+      } else {
+        plantList.value = [...plantList.value, ...newData];
+      }
+
+      if (plantList.value === 0 || plantList.value >= response.total) {
+        loadStatus.value = 'nomore';
+      } else if (plantList.value.length < response.total) {
+        loadStatus.value = 'loadmore';
+      }
+
+      console.log('123', plantList.value)
+
+    } else {
+      // 请求失败或无数据
+      if (queryParams.pageNum === 1) {
+        plantList.value = [];
+      }
+      loadStatus.value = 'nomore';
+
+      uni.showToast({
+        title: response.msg || '加载失败',
+        icon: 'none'
+      });
+    }
+  } catch (error) {
+    if (queryParams.pageNum === 1) {
+      plantList.value = [];
+    }
+    loadStatus.value = 'nomore';
+
+    uni.showToast({
+      title: response.msg || '加载失败',
+      icon: 'none'
+    });
+  }
+}
+
 const getRankClass = (idx) => {
   if (idx === 0) return 'bg-gradient-to-br from-yellow-300 to-yellow-600';
   if (idx === 1) return 'bg-gradient-to-br from-slate-300 to-slate-500';
@@ -662,6 +906,7 @@ const resetFilters = () => {
   activeFilter.value = '全部';
   searchQuery.value = '';
   difficultyFilter.value = 'all';
+  selectedDeepFilters.value = []
   sortBy.value = 'recommended';
 };
 

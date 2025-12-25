@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { getDiseaseRecords } from '@/apis/modules/disease';
+import { getDiseaseRecords, updateDiagnosisStatus } from '@/apis/modules/disease';
 
 export default {
   name: 'DiseaseRecords',

@@ -72,7 +72,7 @@
             <view
               class="mt-4 w-full py-2 bg-rose-50 text-rose-600 text-xs font-bold rounded-lg text-center active:bg-rose-100 transition-colors"
               @click="handleBuy">
-              购买红宝石橡皮树 →
+              购买橡皮树 →
             </view>
           </view>
         </up-scroll-list>
@@ -171,7 +171,7 @@ const lineOpts = ref({
 
 // ------------------- 柱状图数据 (HTML实现) -------------------
 const barData = ref([
-  { label: '红宝石橡皮树', value: 95, colorClass: 'bg-rose-500', icon: '🏆' },
+  { label: '橡皮树', value: 95, colorClass: 'bg-rose-500', icon: '🏆' },
   { label: '虎皮兰', value: 88, colorClass: 'bg-emerald-500', icon: '2' },
   { label: '绿萝', value: 82, colorClass: 'bg-teal-400', icon: '3' }
 ]);

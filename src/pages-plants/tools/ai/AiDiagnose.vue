@@ -3,7 +3,7 @@
     <view class="flex-1 flex flex-col">
 
       <view v-if="step === 'upload'" class="flex-1 flex flex-col p-6">
-        <view class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 mb-6">
+        <view class="bg-white rounded-3xl p-6 shadow-sm border border-solid border-slate-100 mb-6">
           <text class="block text-xl font-bold text-slate-800 mb-2">拍摄植物照片</text>
           <text class="block text-sm text-slate-400 mb-6">
             请确保光线充足，将植物病灶部位（如黄叶、斑点）置于画面中心。
@@ -11,7 +11,7 @@
 
           <view @click="handleChooseImage"
             class="aspect-[4/3] rounded-2xl bg-slate-50 border-2 border-dashed border-slate-300 flex flex-col items-center justify-center cursor-pointer hover:bg-emerald-50 hover:border-emerald-300 transition-all group relative overflow-hidden">
-            <image v-if="plant?.image" :src="plant.image" mode="aspectFill"
+            <image v-if="image" :src="image" mode="aspectFill"
               class="absolute inset-0 w-full h-full opacity-20 pointer-events-none" />
 
             <view
@@ -22,12 +22,12 @@
           </view>
         </view>
 
-        <view class="bg-blue-50 rounded-2xl p-4 flex gap-3 border border-blue-100">
+        <view class="bg-blue-50 rounded-2xl p-4 flex gap-3 border border-solid border-blue-100">
           <text class="iconfont icon-lucide-stethoscope text-xl text-blue-600 shrink-0 mt-0.5"></text>
           <view>
             <text class="block font-bold text-blue-900 text-sm">诊断小贴士</text>
             <text class="block text-xs text-blue-700/80 mt-1 leading-relaxed">
-              Gemini Pro 视觉模型支持识别 2000+ 种常见植物病虫害。如需更准确结果，请尽量靠近拍摄叶片细节。
+              如需更准确结果，请尽量靠近拍摄叶片细节。
             </text>
           </view>
         </view>
@@ -43,7 +43,7 @@
         </view>
 
         <view
-          class="relative z-20 w-full max-w-xs bg-black/60 backdrop-blur-md rounded-2xl p-6 border border-white/10 text-center">
+          class="relative z-20 w-full max-w-xs bg-black/60 backdrop-blur-md rounded-2xl p-6 border border-solid border-white/10 text-center">
           <view class="flex justify-center mb-4">
             <text class="iconfont icon-lucide-loader-2 text-3xl text-emerald-500 animate-spin"></text>
           </view>
@@ -63,18 +63,27 @@
           <view class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></view>
 
           <view class="absolute bottom-0 left-0 right-0 p-6">
-            <view class="flex items-end justify-between">
+            <view class="flex items-end justify-between mb-2">
               <view>
                 <view
                   class="inline-flex items-center gap-1.5 bg-emerald-600 text-white px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase mb-2 shadow-lg">
-                  <text class="iconfont icon-lucide-check-circle-2 text-xs"></text>
-                  <text>AI Analysis Complete</text>
+                  <text class="iconfont icon-lucide-circle-check text-xs leading-none"></text>
+                  <text>AI 分析完成</text>
                 </view>
-                <text class="block text-2xl font-bold text-white leading-tight">{{ result.title }}</text>
+                <view class="flex align-items justify-center">
+                  <text class="block text-2xl font-bold text-white leading-tight">{{ result.title }}</text>
+                  <view v-if="matchedDisease.id" @click="handleNavToDisease"
+                    class="ml-2 font-bold text-emerald-600 bg-white/60 rounded-lg hover:bg-white transition-colors flex items-center leading-none px-2">
+                    <text class="text-xs leading-none">查看百科</text>
+                    <text class="text-xs leading-none iconfont icon-lucide-arrow-right"></text>
+                    <!-- <ArrowRight className="w-3 h-3" /> -->
+                  </view>
+                </view>
               </view>
               <view class="text-center">
-                <text class="block text-3xl font-bold" :class="getColorClass(result.status, 'text', '400')">{{
-                  result.score }}</text>
+                <text class="block text-3xl font-bold leading-none"
+                  :class="getColorClass(result.status, 'text', '400')">{{
+                    result.score }}</text>
                 <text class="text-[10px] text-white/60 font-bold uppercase">健康评分</text>
               </view>
             </view>
@@ -84,7 +93,7 @@
         <view class="px-6 -mt-6 relative z-10 space-y-6">
 
           <view
-            class="bg-white rounded-2xl p-5 shadow-lg shadow-slate-200/50 border border-slate-50 flex items-center justify-between">
+            class="bg-white rounded-2xl p-5 shadow-lg shadow-slate-200/50 border border-solid border-slate-50 flex items-center justify-between">
             <view class="flex gap-4">
               <view class="text-center">
                 <text class="block text-xs text-slate-400 mb-1">置信度</text>
@@ -112,14 +121,14 @@
             </view>
             <view class="flex flex-wrap gap-2">
               <view v-for="(sym, i) in result.symptoms" :key="i"
-                class="px-3 py-1.5 bg-slate-100 text-slate-600 text-xs font-bold rounded-lg border border-slate-200">
+                class="px-3 py-1.5 bg-slate-100 text-slate-600 text-xs font-bold rounded-lg border border-solid border-slate-200">
                 {{ sym }}
               </view>
             </view>
           </view>
 
           <view v-if="matchedDisease && matchedDisease.bundle"
-            class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-5 border border-emerald-100 relative overflow-hidden group">
+            class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-5 border border-solid border-emerald-100 relative overflow-hidden group">
             <view class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-100/50 rounded-full blur-xl transition-colors">
             </view>
 
@@ -134,9 +143,10 @@
                 </view>
               </view>
 
-              <view class="bg-white/60 rounded-xl p-3 border border-white/50 flex gap-3 items-center mb-4">
-                <view class="w-16 h-16 bg-white rounded-lg overflow-hidden shrink-0 border border-slate-100">
-                  <image :src="matchedDisease.bundle.products[0].image" mode="aspectFill" class="w-full h-full" />
+              <view class="bg-white/60 rounded-xl p-3 border border-solid border-white/50 flex gap-3 items-center mb-4">
+                <view
+                  class="w-16 h-16 bg-white rounded-lg overflow-hidden shrink-0 border border-solid border-slate-100">
+                  <image :src="matchedDisease.bundle.image" mode="aspectFill" class="w-full h-full" />
                 </view>
                 <view class="flex-1 min-w-0">
                   <text class="block font-bold text-slate-800 text-sm truncate">{{ matchedDisease.bundle.name }}</text>
@@ -160,7 +170,7 @@
             </view>
           </view>
 
-          <view class="bg-slate-50 rounded-2xl p-5 border border-slate-100">
+          <!-- <view class="bg-slate-50 rounded-2xl p-5 border border-solid border-slate-100">
             <view class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
               <text class="iconfont icon-lucide-file-text text-base text-emerald-600"></text>
               <text>详细诊断报告</text>
@@ -168,16 +178,16 @@
             <text class="block text-xs text-slate-600 leading-relaxed text-justify whitespace-pre-line">
               {{ result.analysis }}
             </text>
-          </view>
+          </view> -->
 
-          <view v-if="!matchedDisease?.bundle && result.status !== 'healthy'">
+          <view v-if="!matchedDisease || (!matchedDisease.bundle && result.status !== 'healthy')">
             <view class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
               <text class="iconfont icon-lucide-stethoscope text-base text-emerald-600"></text>
               <text>建议处理方案</text>
             </view>
             <view class="space-y-3">
               <view v-for="(stepText, i) in result.treatment" :key="i"
-                class="flex gap-3 items-start bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                class="flex gap-3 items-start bg-white p-4 rounded-xl border border-solid border-slate-100 shadow-sm">
                 <view
                   class="w-6 h-6 rounded-full bg-slate-100 text-slate-500 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                   {{ i + 1 }}
@@ -211,31 +221,21 @@
 </template>
 
 <script setup>
-import { ref, computed, onUnmounted } from 'vue';
+import { ref, computed, reactive } from 'vue';
+import { analyzeDiseaseWithAI, createDiagnosis, getPackagesByDisease } from '@/apis/modules/disease';
+import { h5ImageToBase64, appImageToBase64, mpImageToBase64 } from '@/common/image2Base64'
+import { onLoad } from '@dcloudio/uni-app';
+import upload from '@/utils/upload';
+import projectConfig from '@/env.config.js';
+import { usePlantDiseases } from '@/hooks/useDisease'
+import { useTreatmentPlan } from '@/hooks/useTreatmentPlan'
+import bus from '@/common/bus.js';
 // 假设已存在这些服务和数据
 // import { analyzePlantHealth } from '../services/geminiService';
 // import { DISEASES } from './DiseaseLibrary';
 
-// Mock Constants (Replace with imports)
-const DISEASES = [
-  { id: 'd2', name: '红蜘蛛', bundle: { name: '红蜘蛛歼灭套装', price: 28.8, originalPrice: 45, products: [{ image: 'https://images.unsplash.com/photo-1628608832049-563b72803893?q=80&w=200&auto=format&fit=crop' }] } }
-];
-const analyzePlantHealth = async (plant) => {
-  // Mock API Call
-  return new Promise(resolve => setTimeout(() => resolve('根据视觉特征分析，叶片呈现典型的红蜘蛛侵害症状，表现为叶片失绿、有细小黄斑。建议检查叶背是否有红色小虫。'), 2000));
-};
-
-const props = defineProps({
-  plant: {
-    type: Object,
-    default: null
-  }
-});
-
-const emit = defineEmits(['back', 'startTreatment', 'saveReport']);
-
-// Safe Area
-const safeAreaTop = ref(44); // uni.getSystemInfoSync().safeAreaInsets.top
+const { findDiseaseById, findDiseaseByName, searchDiseases } = usePlantDiseases()
+const { createPlan } = useTreatmentPlan()
 
 // State
 const step = ref('upload');
@@ -244,30 +244,58 @@ const scanProgress = ref(0);
 const scanText = ref('初始化视觉引擎...');
 const result = ref(null);
 const isSaved = ref(false);
+const plantId = ref(null)
 
 let scanInterval = null;
 
+const diagnosisResult = reactive({
+  diseaseImageUrl: '',
+  diseaseType: '',
+  recommendedProduct: '',
+  symptoms: '',
+  treatmentPlan: ''
+})
+const matchedDisease = ref(null)
+
+
 // Methods
-const onBack = () => emit('back');
-const onStartTreatment = (disease, bundle) => emit('startTreatment', disease, bundle);
-const onSaveReport = (record) => emit('saveReport', record);
+const onStartTreatment = () => {
+  createPlan(matchedDisease.value, matchedDisease.value.bundle)
+  bus.emit('refreshTreatmentList');
+};
+// const onSaveReport = (record) => emit('saveReport', record);
 
 const handleChooseImage = () => {
   uni.chooseImage({
     count: 1,
-    success: (res) => {
+    sizeType: ['compressed'], // 建议压缩，避免Base64过大
+    sourceType: ['album', 'camera'],
+    success: async (res) => {
       const tempFilePath = res.tempFilePaths[0];
-      image.value = tempFilePath;
-
-      // In uniapp, we usually work with tempFilePath.
-      // If base64 is needed for Gemini API, use uni.getFileSystemManager().readFile
-
-      startAnalysis(tempFilePath);
+      image.value = tempFilePath; // 设置预览图
+      let base64Image = ''
+      // 2. 读取文件为 Base64 并开始识别
+      // #ifdef H5
+      base64Image = await h5ImageToBase64(tempFilePath);
+      // #endif
+      // #ifdef MP-WEIXIN
+      base64Image = await mpImageToBase64(tempFilePath);
+      // #endif
+      // #ifdef APP-PLUS
+      base64Image = await appImageToBase64(tempFilePath);
+      // #endif
+      // identifyPlant(base64Image);
+      startAnalysis(base64Image);
+      // const response = await analyzeDiseaseWithAI({
+      //   base64Image,
+      //   diseaseImageUrl: image.value
+      // });
+      // console.log('AI诊断响应:', response);
     }
   });
 };
 
-const startAnalysis = async (imgSrc) => {
+const startAnalysis = async (base64Image) => {
   step.value = 'scanning';
   scanProgress.value = 0;
   isSaved.value = false;
@@ -290,35 +318,38 @@ const startAnalysis = async (imgSrc) => {
   }, 800);
 
   try {
-    const aiText = await analyzePlantHealth(
-      props.plant || { name: '未知植物', species: '未知', location: '未知' }
-    );
+    const response = await analyzeDiseaseWithAI({
+      base64Image,
+      diseaseImageUrl: image.value
+    });
 
-    // Simulation Logic
-    let matchedId = undefined;
-    let mockStatus = 'healthy';
+    // console.log('matchBestDisease', matchBestDisease(response.data))
+    console.log('AI诊断响应:', response);
+    // const aiText = await analyzePlantHealth(
+    //   props.plant || { name: '未知植物', species: '未知', location: '未知' }
+    // );
 
-    // Demo Logic: chance to find disease
-    const isSickSimulation = true; // Force sick for demo
-
-    if (isSickSimulation) {
-      mockStatus = 'warning';
-      matchedId = 'd2'; // Demo: Red Spider Mites
-    }
-
+    let mockStatus = response.data.diseaseType === '无病害' ? 'healthy' : 'warning';
+    const healthyScore = Math.floor(Math.random() * 11) + 90;
+    const warningScore = Math.floor(Math.random() * 11) + 50;
+    const confidence = Math.floor(Math.random() * 11) + 90;
     const mockStructuredResult = {
-      score: mockStatus === 'healthy' ? 95 : 62,
+      score: mockStatus === 'healthy' ? healthyScore : warningScore,
       status: mockStatus,
-      title: mockStatus === 'healthy' ? '植物状态良好' : '检测到红蜘蛛危害',
-      confidence: 92,
-      symptoms: mockStatus === 'healthy' ? ['叶色翠绿', '无明显斑点'] : ['叶背红点', '叶片失绿', '有丝网'],
-      analysis: aiText,
+      title: mockStatus === 'healthy' ? '植物状态良好' : response.data.diseaseType,
+      confidence: confidence,
+      symptoms: mockStatus === 'healthy' ? ['叶色翠绿', '无明显斑点'] : [response.data.symptoms],
+      analysis: '',
       treatment: mockStatus === 'healthy'
         ? ['继续保持当前养护', '定期清洁叶片']
-        : ['建议立即隔离植物', '使用杀螨剂喷洒', '提高环境湿度'],
-      matchedDiseaseId: matchedId
+        : response.data.treatmentPlan.split(/(?=\d+\.)/)
+          .filter(item => item.trim().length > 0)
+          .map(item => item.replace(/^\d+\.\s*/, '').trim()),
+      matchedDiseaseId: ''
     };
-
+    matchedDisease.value = matchBestDisease(response.data)
+    // diagnosisResult.value
+    Object.assign(diagnosisResult, response.data)
     clearInterval(scanInterval);
     scanProgress.value = 100;
     setTimeout(() => {
@@ -329,22 +360,76 @@ const startAnalysis = async (imgSrc) => {
   } catch (e) {
     clearInterval(scanInterval);
     step.value = 'upload';
+    console.log(e)
     uni.showToast({ title: '诊断失败', icon: 'none' });
   }
 };
 
-const handleSave = () => {
-  if (!result.value || !image.value) return;
+const handleSave = async () => {
+  // if (!result.value || !image.value) return;
 
-  const newRecord = {
-    id: `diag-${Date.now()}`,
-    date: new Date().toLocaleString(),
-    plantName: props.plant?.name || '未命名植物',
-    image: image.value,
-    ...result.value
-  };
+  // const newRecord = {
+  //   id: `diag-${Date.now()}`,
+  //   date: new Date().toLocaleString(),
+  //   plantName: props.plant.name || '未命名植物',
+  //   image: image.value,
+  //   ...result.value
+  // };
 
-  onSaveReport(newRecord);
+  // onSaveReport(newRecord);
+  try {
+    let imageUrl = '';
+    const uploadResult = await upload({
+      url: '/common/upload',
+      method: 'post',
+      filePath: image.value,
+    });
+    if (uploadResult.code === 200) {
+      imageUrl = uploadResult.fileName;
+    } else {
+      throw new Error('图片上传失败');
+    }
+    const recordData = {
+      plantId: plantId.value,
+      // plantName: this.selectedPlantName || '',
+      diseaseImageUrl: projectConfig.baseUrl + imageUrl,
+      diseaseType: diagnosisResult.diseaseType,
+      symptoms: diagnosisResult.symptoms,
+      treatmentPlan: diagnosisResult.treatmentPlan,
+    };
+    console.log(recordData)
+    // return
+    const response = await createDiagnosis(recordData);
+
+    if (response.code === 200) {
+      uni.showToast({
+        title: '保存成功',
+        icon: 'success'
+      });
+      // uni.$emit('refreshPlantList');
+      // uni.$emit('refreshPlantDetail');
+      // await this.$t.wait()
+      // 根据是否有选择植物跳转到不同页面
+      // if (this.selectedPlantId) {
+      //   uni.redirectTo({
+      //     url: `/pages-plants/plants/plantsDetail/plantsDetail?plantId=${this.selectedPlantId}`
+      //   });
+      // } else {
+      //   uni.navigateTo({
+      //     url: '/pages-plants/plants/diseaseRecords/diseaseRecords'
+      //   });
+      // }
+    } else {
+      throw new Error(response.msg || '保存失败');
+    }
+  } catch (error) {
+    console.error('保存失败:', error);
+    // this.error = error.message || '保存失败，请重试';
+    uni.showToast({
+      title: error.message || '保存失败，请重试',
+      icon: 'none'
+    });
+  }
   isSaved.value = true;
 };
 
@@ -359,19 +444,69 @@ const getColorClass = (status, type, shade) => {
   if (status === 'healthy') color = 'emerald';
   else if (status === 'warning') color = 'orange';
   else if (status === 'danger') color = 'red';
-
   return `${type}-${color}-${shade}`;
 };
 
+const matchBestDisease = (diagnosisResult) => {
+  // if (diseases.value.length === 0) loadDiseases();
+  if (!diagnosisResult) return null;
+
+  const { diseaseType, symptoms } = diagnosisResult;
+  const searchString = (symptoms || "").toLowerCase();
+
+  // 1. 尝试直接名称匹配 (如果 API 返回了精准名称，如 "红蜘蛛")
+  const exactMatch = findDiseaseByName(diseaseType);
+  if (exactMatch) return exactMatch;
+
+  // 2. 关键词模糊匹配策略 (处理 "黄化病" 这种大类)
+  // 定义关键词到具体 ID 的映射规则
+  // 优先级：先匹配具体的化学元素缺乏，再匹配通用症状
+  const keywordMap = [
+    { keywords: ["缺铁", "失绿", "新叶黄", "铁"], targetId: "d8" }, // 缺铁症 (优先推荐带套装的 d8)
+    { keywords: ["缺氮", "生长缓慢", "老叶黄", "黄化", "氮"], targetId: "d7" }, // 缺氮症
+    { keywords: ["缺镁", "叶脉绿", "镁"], targetId: "d9" }, // 缺镁症
+    { keywords: ["红蜘蛛", "螨"], targetId: "d2" }, // 红蜘蛛
+    { keywords: ["烂根", "腐烂", "水多", "根腐"], targetId: "d1" }, // 根腐病
+    { keywords: ["晒伤", "焦枯"], targetId: "d4" }, // 叶焦
+    { keywords: ["白粉", "白斑"], targetId: "d3" }, // 白粉病
+  ];
+
+  // 遍历规则，如果在 API 返回的症状描述中找到了关键词，直接返回对应的 ID
+  for (const rule of keywordMap) {
+    const hasMatch = rule.keywords.some((keyword) =>
+      searchString.includes(keyword)
+    );
+    if (hasMatch) {
+      return findDiseaseById(rule.targetId);
+    }
+  }
+
+  // 3. 兜底策略：全文搜索
+  // 如果没有命中特定规则，尝试用 diseaseType 去本地数据库进行模糊搜索，取第一个结果
+  const fallbackResults = searchDiseases(diseaseType);
+  if (fallbackResults && fallbackResults.length > 0) {
+    return fallbackResults[0];
+  }
+
+  return null;
+};
+
+const handleNavToDisease = () => {
+  uni.navigateTo({ url: '/pages-plants/plants/diseaseDetail2/index?id=' + matchedDisease.value.id });
+}
+
+
 // Computed
-const matchedDisease = computed(() => {
-  return result.value?.matchedDiseaseId ? DISEASES.find(d => d.id === result.value.matchedDiseaseId) : null;
-});
+// const matchedDisease = computed(() => {
+//   return result.value.matchedDiseaseId ? DISEASES.find(d => d.id === result.value.matchedDiseaseId) : null;
+// });
 
 // Cleanup
-onUnmounted(() => {
-  if (scanInterval) clearInterval(scanInterval);
-});
+onLoad((options) => {
+  if (options.plantId) {
+    plantId.value = options.plantId
+  }
+})
 
 </script>
 

@@ -1,7 +1,7 @@
 /*
  * @Date: 2024-09-24 10:53:20
  * @LastEditors: 徐一鸣
- * @LastEditTime: 2025-12-08 10:04:44
+ * @LastEditTime: 2025-12-19 14:24:40
  * @Description:
  */
 // H5端开发和生产环境协议
@@ -25,9 +25,10 @@ const CONFIG = {
   development: {
     officialWebUrl: "https://fastbee.cn/",
     // baseUrl: "http://192.168.0.142:8080",
-    baseUrl: "http://118.178.93.44:8080",
+    // baseUrl: "http://118.178.93.44:8080",
+    baseUrl: "https://www.hwstech.cn/prod-api",
     // mqttServer: protocalDev + "192.168.0.142:8083/mqtt",
-    mqttServer: protocalDev + "118.178.93.44:8083/mqtt",
+    mqttServer: protocalDev + "www.hwstech.cn:8083/mqtt",
     decoderUrl: "http://localhost/", //主项目前端部署地址,能访问到js/jessibuca/decoder.js文件
     qqmapKey,
     xinzhiKey,
@@ -35,8 +36,10 @@ const CONFIG = {
   // 生产环境配置
   production: {
     officialWebUrl: "https://fastbee.cn/",
-    baseUrl: "http://118.178.93.44:8080",
-    mqttServer: protocalProd + "118.178.93.44:8083/mqtt",
+    // baseUrl: "http://118.178.93.44:8080",
+    baseUrl: "https://www.hwstech.cn/",
+    // mqttServer: protocalProd + "118.178.93.44:8083/mqtt",
+    mqttServer: protocalProd + "www.hwstech.cn:8083/mqtt",
     decoderUrl: "http://localhost/", //主项目前端部署地址,能访问到js/jessibuca/decoder.js文件
     qqmapKey,
     xinzhiKey,

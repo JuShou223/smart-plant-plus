@@ -1,7 +1,7 @@
 /*
  * @Date: 2025-11-12 16:25:46
  * @LastEditors: 徐一鸣
- * @LastEditTime: 2025-12-10 16:08:28
+ * @LastEditTime: 2025-12-24 16:37:00
  * @Description:
  */
 // ==================== 植物疾病诊断相关接口 ====================
@@ -51,7 +51,11 @@ export function getPlantDiseaseRecord(plantId) {
 
 // 更新诊断状态
 export function updateDiagnosisStatus(id, data) {
-  return uni.$u.http.post("/hws/plant-diagnosis/plant/" + id + "/status", data);
+  return uni.$u.http.request({
+    url: "/hws/plant-diagnosis/" + id + "/status",
+    method: "PATCH",
+    params: data,
+  });
 }
 
 // 查询疾病库

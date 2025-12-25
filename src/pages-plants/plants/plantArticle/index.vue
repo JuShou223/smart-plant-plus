@@ -116,7 +116,7 @@
             <view>
               <text class="block text-sm font-bold text-slate-900">{{ collection.author }}</text>
               <text class="block text-xs text-slate-500 uppercase tracking-wide">认证植物学家 • {{ collection.publishDate
-                }}</text>
+              }}</text>
             </view>
           </view>
 
@@ -133,7 +133,7 @@
                 {{ paragraph }}
               </text>
 
-              <view v-if="linkedProducts[idx]"
+              <view v-if="linkedProducts[idx]" @click="handleToDetail(linkedProducts[idx].id)"
                 class="lg:hidden animate-fade-in-up bg-white rounded-xl border border-slate-100 shadow-sm p-3 flex gap-4 items-center group relative overflow-hidden">
                 <view class="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-slate-50">
                   <image :src="linkedProducts[idx].image" :alt="linkedProducts[idx].name" mode="aspectFill"
@@ -215,7 +215,7 @@
                         class="block font-serif font-bold text-slate-900 text-lg leading-tight group-hover:text-emerald-700 transition-colors">{{
                           plant.name }}</text>
                       <text class="block text-xs text-slate-400 italic mt-0.5 font-serif">{{ plant.scientificName
-                        }}</text>
+                      }}</text>
                     </view>
 
                     <text v-if="plant.recommendReason"
@@ -254,13 +254,14 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
+import { usePlantLibrary } from '@/hooks/usePlantLibrary'
 
 // --- MOCK DATA ---
 const MOCK_PRODUCTS = [
   {
-    id: 'lib-1',
+    id: '1061',
     name: '天堂鸟',
     scientificName: 'Strelitzia Nicolai',
     price: 128,
@@ -287,7 +288,7 @@ const MOCK_PRODUCTS = [
     }
   },
   {
-    id: 'lib-2',
+    id: '1062',
     name: '爱心球兰',
     scientificName: 'Hoya Kerrii',
     price: 39,
@@ -314,7 +315,7 @@ const MOCK_PRODUCTS = [
     }
   },
   {
-    id: 'lib-3',
+    id: '1063',
     name: '宝莲灯',
     scientificName: 'Medinilla Magnifica',
     price: 299,
@@ -340,7 +341,7 @@ const MOCK_PRODUCTS = [
     }
   },
   {
-    id: 'lib-4',
+    id: '1064',
     name: '镜面草',
     scientificName: 'Pilea Peperomioides',
     price: 58,
@@ -367,7 +368,7 @@ const MOCK_PRODUCTS = [
     }
   },
   {
-    id: 'lib-5',
+    id: '1065',
     name: '油画竹芋',
     scientificName: 'Calathea Fusion White',
     price: 88,
@@ -393,7 +394,7 @@ const MOCK_PRODUCTS = [
     }
   },
   {
-    id: 'lib-6',
+    id: '1066',
     name: '橄榄树',
     scientificName: 'Olea Europaea',
     price: 158,
@@ -443,7 +444,7 @@ const FEATURED_COLLECTIONS = [
       "定期擦拭叶片灰尘，不仅为了美观，更能帮助植物呼吸。",
       "搭配编织篮或水泥盆，能瞬间提升植物的装饰格调。"
     ],
-    linkedPlantIds: ['lib-6', 'lib-1', 'lib-3']
+    linkedPlantIds: ['1066', '1061', '1063']
   },
   {
     id: 2,
@@ -465,7 +466,7 @@ const FEATURED_COLLECTIONS = [
       "小心不要把水浇到电脑或文件上，推荐使用长嘴壶。",
       "选择底部有托盘的花盆，防止漏水。"
     ],
-    linkedPlantIds: ['lib-2', 'lib-4', 'lib-5']
+    linkedPlantIds: ['1062', '1064', '1065']
   },
   {
     id: 3,
@@ -488,9 +489,11 @@ const FEATURED_COLLECTIONS = [
       "避免使用化肥和杀虫剂，选择天然有机肥料。",
       "将植物放置在稳固的花盆中，防止被宠物打翻。"
     ],
-    linkedPlantIds: ['lib-4', 'lib-5', 'lib-2']
+    linkedPlantIds: ['1064', '1065', '1062']
   },
 ];
+
+const { library, loadLibrary } = usePlantLibrary()
 
 const defaultArticle = {
   title: 'Collection Title',
@@ -510,13 +513,27 @@ const emit = defineEmits(['back', 'openAI']);
 const safeAreaTop = ref(0);
 const loading = ref(true); // 加载状态
 const error = ref(''); // 错误信息
-const linkedProducts = ref([])
+// const linkedProducts = ref([])
+const articleId = ref('');
+
+const linkedProducts = computed(() => {
+  const foundArticle = FEATURED_COLLECTIONS.find(item => item.id == articleId.value);
+  Object.assign(collection, foundArticle);
+  console.log('foundArticle', foundArticle)
+  console.log(library.value)
+  return foundArticle.linkedPlantIds.map(pid =>
+    library.value.find(p => p.id == pid)
+  ).filter(Boolean);
+
+});
+
 
 onLoad((options) => {
   console.log('页面参数:', options);
 
   // 从路由参数获取 id
-  const articleId = options.id;
+  articleId.value = options.id;
+  loadLibrary()
 
   // if (!plantId) {
   //   error.value = '未找到ID';
@@ -525,42 +542,46 @@ onLoad((options) => {
   // }
 
   // 从 MOCK_PRODUCTS 中查找对应的植物
-  const foundArticle = FEATURED_COLLECTIONS.find(item => item.id == articleId);
-  console.log(foundArticle)
-  if (foundArticle) {
-    // 更新响应式数据
-    Object.assign(collection, foundArticle);
-    linkedProducts.value = foundArticle.linkedPlantIds.map(pid =>
-      MOCK_PRODUCTS.find(p => p.id == pid)
-    ).filter(Boolean);
-    // 可以在这里设置页面标题
-    // uni.setNavigationBarTitle({
-    //   title: plant.name
-    // });
+  // const foundArticle = FEATURED_COLLECTIONS.find(item => item.id == articleId);
+  // console.log(foundArticle)
+  // if (foundArticle) {
+  //   // 更新响应式数据
+  //   Object.assign(collection, foundArticle);
+  //   linkedProducts.value = foundArticle.linkedPlantIds.map(pid =>
+  //     MOCK_PRODUCTS.find(p => p.id == pid)
+  //   ).filter(Boolean);
+  //   // 可以在这里设置页面标题
+  //   // uni.setNavigationBarTitle({
+  //   //   title: plant.name
+  //   // });
 
-    // 模拟加载延迟
-    setTimeout(() => {
-      loading.value = false;
-    }, 500);
-  } else {
-    error.value = '未找到对应的信息';
-    loading.value = false;
+  //   // 模拟加载延迟
+  //   setTimeout(() => {
+  //     loading.value = false;
+  //   }, 500);
+  // } else {
+  //   error.value = '未找到对应的信息';
+  //   loading.value = false;
 
-    // 设置为默认植物
-    // Object.assign(plant, {
-    //   ...defaultPlant,
-    //   id: plantId,
-    //   name: `植物 ${plantId}`
-    // });
-  }
+  //   // 设置为默认植物
+  //   // Object.assign(plant, {
+  //   //   ...defaultPlant,
+  //   //   id: plantId,
+  //   //   name: `植物 ${plantId}`
+  //   // });
+  // }
 
-  console.log('当前数据:', collection);
-  console.log('当前数据:', linkedProducts.value);
+  // console.log('当前数据:', collection);
+  // console.log('当前数据:', linkedProducts.value);
 });
 
 // 方法
 const handleBack = () => {
   uni.navigateBack();
+};
+
+const handleToDetail = (id) => {
+  uni.navigateTo({ url: '/pages-plants/plants/plantLibraryDetailNew/index?id=' + id });
 };
 
 const handleOpenAI = () => {

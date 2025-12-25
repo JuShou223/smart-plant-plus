@@ -301,7 +301,7 @@
           <text class="text-2xl font-bold text-emerald-600 leading-none">¥{{ plant.price }}</text>
         </view>
         <view class="flex-1 flex gap-3 justify-end">
-          <button @click="handleOpenAI"
+          <button @click="handleAddPlant"
             class="flex-1 bg-slate-100 text-slate-900 font-bold text-sm py-3.5 px-4 rounded-xl hover:bg-slate-200 transition-colors m-0 flex items-center justify-center leading-none">
             加入花园
           </button>
@@ -320,205 +320,34 @@
 <script setup>
 import { ref, computed, reactive } from 'vue';
 import { onLoad, onShow, onReady } from '@dcloudio/uni-app';
-
-// --- MOCK DATA ---
-const MOCK_PRODUCTS = [
-  {
-    id: 'lib-1',
-    name: '天堂鸟',
-    scientificName: 'Strelitzia Nicolai',
-    price: 128,
-    image: 'https://hws-smart-planting.oss-cn-beijing.aliyuncs.com/photo-1463320898484-cdee8141c787.png',
-    rating: 4.8,
-    difficulty: 'medium',
-    tags: ['网红绿植', '净化空气', '大型植物'],
-    description: '不仅是植物，更是家中的艺术品。巨大的叶片带来浓郁的热带风情，让您的花园瞬间提升档次。',
-    recommendReason: '拉高层高的视觉焦点',
-    sales: 1200,
-    viewers: 45,
-    buyerData: { percentage: 88, tag: '室内设计师选择' },
-    requirements: {
-      light: { min: 2000, max: 5000 },
-      temperature: { min: 18, max: 30 },
-      humidity: { min: 60, max: 80 },
-      soilMoisture: { min: 40, max: 60 }
-    },
-    careTips: {
-      water: '喜湿润，夏季多浇水并向叶面喷雾，冬季微干。',
-      light: '喜充足阳光，但也耐半阴，避开夏季烈日暴晒。',
-      temperature: '不耐寒，冬季保持10℃以上，最适20-30℃。',
-      soil: '喜疏松肥沃、排水良好的砂质土壤，需深盆。'
-    }
-  },
-  {
-    id: 'lib-2',
-    name: '爱心球兰',
-    scientificName: 'Hoya Kerrii',
-    price: 39,
-    image: 'https://hws-smart-planting.oss-cn-beijing.aliyuncs.com/photo-1620803366004-119b57f54cd6.png',
-    rating: 4.9,
-    difficulty: 'easy',
-    tags: ['新手友好', '送礼首选', '多肉'],
-    description: '在这个快节奏的世界里，送自己一颗永不凋谢的爱心。极其耐旱，哪怕一个月忘记浇水也能茁壮成长。',
-    recommendReason: '表达爱意的最佳载体',
-    sales: 3500,
-    viewers: 128,
-    buyerData: { percentage: 95, tag: '送礼用户首选' },
-    requirements: {
-      light: { min: 800, max: 2500 },
-      temperature: { min: 15, max: 28 },
-      humidity: { min: 40, max: 60 },
-      soilMoisture: { min: 10, max: 30 }
-    },
-    careTips: {
-      water: '极耐旱，“宁干勿湿”，土干透后再浇水。',
-      light: '喜明亮散射光，忌强光直射，光照不足生长慢。',
-      temperature: '适宜18-28℃，冬季保持5℃以上即可。',
-      soil: '需使用排水性极佳的多肉专用土或颗粒土。'
-    }
-  },
-  {
-    id: 'lib-3',
-    name: '宝莲灯',
-    scientificName: 'Medinilla Magnifica',
-    price: 299,
-    image: 'https://hws-smart-planting.oss-cn-beijing.aliyuncs.com/premium_photo-1669148911895-a95de51d09ca.png',
-    rating: 4.7,
-    difficulty: 'hard',
-    tags: ['稀有', '开花植物', '高端'],
-    description: '植物界的贵族，粉色的花朵如同华丽的宫灯垂下。拥有它，您的花园将成为邻居羡慕的焦点。',
-    recommendReason: '自带贵族气息的宫灯花',
-    sales: 150,
-    viewers: 32,
-    requirements: {
-      light: { min: 1500, max: 3000 },
-      temperature: { min: 20, max: 30 },
-      humidity: { min: 70, max: 90 },
-      soilMoisture: { min: 50, max: 70 }
-    },
-    careTips: {
-      water: '喜高湿，经常喷雾增湿，盆土保持湿润不积水。',
-      light: '喜半阴，忌强光，明亮散射光利于开花。',
-      temperature: '极不耐寒，冬季需15℃以上，注意保暖。',
-      soil: '喜疏松透气、富含腐殖质的微酸性土壤。'
-    }
-  },
-  {
-    id: 'lib-4',
-    name: '镜面草',
-    scientificName: 'Pilea Peperomioides',
-    price: 58,
-    image: 'https://hws-smart-planting.oss-cn-beijing.aliyuncs.com/premium_photo-1674237276501-595398f90f87.png',
-    rating: 4.6,
-    difficulty: 'easy',
-    tags: ['招财', '宠物安全', '小型'],
-    description: '圆圆的叶片象征着团圆和财富。它不仅可爱，而且对猫狗完全无毒，是铲屎官的完美选择。',
-    recommendReason: '宠物友好的招财萌物',
-    sales: 890,
-    viewers: 67,
-    buyerData: { percentage: 92, tag: '养宠家庭选择' },
-    requirements: {
-      light: { min: 1000, max: 3000 },
-      temperature: { min: 15, max: 28 },
-      humidity: { min: 50, max: 70 },
-      soilMoisture: { min: 30, max: 50 }
-    },
-    careTips: {
-      water: '见干见湿，保持微湿。定期擦拭叶片灰尘。',
-      light: '喜明亮散射光，耐阴。避免暴晒防卷叶。',
-      temperature: '较耐寒，0℃以上可过冬，适宜15-25℃。',
-      soil: '对土壤要求不严，排水良好的沙质壤土即可。'
-    }
-  },
-  {
-    id: 'lib-5',
-    name: '油画竹芋',
-    scientificName: 'Calathea Fusion White',
-    price: 88,
-    image: 'https://hws-smart-planting.oss-cn-beijing.aliyuncs.com/premium_photo-1676321046535-848a104819ca.png',
-    rating: 4.5,
-    difficulty: 'medium',
-    tags: ['色彩斑斓', '耐阴', '需保湿', '雨林'],
-    description: '大自然的调色盘。每一片叶子都是独一无二的油画作品，为单调的角落带来生机勃勃的色彩。',
-    recommendReason: '点亮暗角的自然油画',
-    sales: 420,
-    viewers: 29,
-    requirements: {
-      light: { min: 500, max: 1500 },
-      temperature: { min: 18, max: 26 },
-      humidity: { min: 70, max: 90 },
-      soilMoisture: { min: 50, max: 80 }
-    },
-    careTips: {
-      water: '对水敏感，保持湿润。必须经常喷雾防焦边。',
-      light: '喜阴，完全避光直射，光强会褪色灼伤。',
-      temperature: '喜温暖，适温20-30℃，冬季不低于15℃。',
-      soil: '需疏松、排水良好且保水性强的微酸性土。'
-    }
-  },
-  {
-    id: 'lib-6',
-    name: '橄榄树',
-    scientificName: 'Olea Europaea',
-    price: 158,
-    image: 'https://hws-smart-planting.oss-cn-beijing.aliyuncs.com/premium_photo-1681807326535-621ae5ef9da3.png',
-    rating: 4.8,
-    difficulty: 'medium',
-    tags: ['北欧风', '喜光', '木本'],
-    description: '简约而不简单的北欧风格代表。银灰色的叶片在阳光下闪闪发光，象征着和平与智慧。',
-    recommendReason: '极简北欧风的灵魂',
-    sales: 680,
-    viewers: 55,
-    buyerData: { percentage: 80, tag: '极简主义者青睐' },
-    requirements: {
-      light: { min: 3000, max: 6000 },
-      temperature: { min: 10, max: 35 },
-      humidity: { min: 40, max: 60 },
-      soilMoisture: { min: 20, max: 50 }
-    },
-    careTips: {
-      water: '较耐旱，土干透浇透。室内养护注意通风。',
-      light: '极喜光，需全日照，光照不足会大量落叶。',
-      temperature: '耐寒性较强，耐短时-5℃，适宜20-30℃。',
-      soil: '喜碱性土壤，需排水性极佳，可混入颗粒。'
-    }
-  }
-];
-
-// 默认植物数据
-const defaultPlant = {
-  id: 'unknown',
-  name: '未知植物',
-  scientificName: 'Unknown Species',
-  price: 0,
-  image: '',
-  rating: 0,
-  difficulty: 'medium',
-  tags: [],
-  description: '暂无描述',
-  recommendReason: '',
-  sales: 0,
-  viewers: 0
-};
+import { usePlantLibrary, SCENE_CONFIGS } from '@/hooks/usePlantLibrary'
 
 // 响应式植物数据
-const plant = reactive({ ...defaultPlant });
+// const plant = reactive({ ...defaultPlant });
 
 // 其他状态
 const isFavorite = ref(false);
-const safeAreaTop = ref(44);
+// const safeAreaTop = ref(44);
 const loading = ref(true); // 加载状态
 const error = ref(''); // 错误信息
+const { library, loadLibrary } = usePlantLibrary()
+const plantId = ref('')
+
+const plant = computed(() => {
+  const foundPlant = library.value.find(item => item.id === plantId.value);
+
+  return foundPlant
+})
 
 // 定义 Emits
 const emit = defineEmits(['back', 'openAI']);
 
 // 在 onLoad 中获取路由参数并设置植物数据
-onLoad((options) => {
+onLoad(async (options) => {
   console.log('页面参数:', options);
 
   // 从路由参数获取 id
-  const plantId = options.id || options.plantId || '';
+  plantId.value = options.id || options.plantId || '';
 
   if (!plantId) {
     error.value = '未找到植物ID';
@@ -526,35 +355,37 @@ onLoad((options) => {
     return;
   }
 
+  loadLibrary()
+
   // 从 MOCK_PRODUCTS 中查找对应的植物
-  const foundPlant = MOCK_PRODUCTS.find(item => item.id === plantId);
+  // const foundPlant = MOCK_PRODUCTS.find(item => item.id === plantId);
 
-  if (foundPlant) {
-    // 更新响应式数据
-    Object.assign(plant, foundPlant);
+  // if (foundPlant) {
+  //   // 更新响应式数据
+  //   Object.assign(plant, foundPlant);
 
-    // 可以在这里设置页面标题
-    uni.setNavigationBarTitle({
-      title: plant.name
-    });
+  //   // 可以在这里设置页面标题
+  //   uni.setNavigationBarTitle({
+  //     title: plant.name
+  //   });
 
-    // 模拟加载延迟
-    setTimeout(() => {
-      loading.value = false;
-    }, 500);
-  } else {
-    error.value = '未找到对应的植物信息';
-    loading.value = false;
+  //   // 模拟加载延迟
+  //   setTimeout(() => {
+  //     loading.value = false;
+  //   }, 500);
+  // } else {
+  //   error.value = '未找到对应的植物信息';
+  //   loading.value = false;
 
-    // 设置为默认植物
-    Object.assign(plant, {
-      ...defaultPlant,
-      id: plantId,
-      name: `植物 ${plantId}`
-    });
-  }
+  //   // 设置为默认植物
+  //   Object.assign(plant, {
+  //     ...defaultPlant,
+  //     id: plantId,
+  //     name: `植物 ${plantId}`
+  //   });
+  // }
 
-  console.log('当前植物数据:', plant);
+  // console.log('当前植物数据:', plant);
 });
 
 // 方法
@@ -581,7 +412,8 @@ const toggleFavorite = () => {
 
 // 计算属性：养护数值
 const metrics = computed(() => {
-  const { tags, difficulty } = plant;
+  console.log('plant', plant)
+  const { tags, difficulty } = plant.value;
   const isSucculent = tags.includes('多肉') || tags.includes('耐旱');
   const isTropical = tags.includes('雨林') || tags.includes('需保湿') || tags.includes('耐阴');
 
@@ -595,7 +427,8 @@ const metrics = computed(() => {
 
 // 计算属性：特性标签
 const activeFeatures = computed(() => {
-  const { tags, difficulty } = plant;
+  console.log('plant', plant.value)
+  const { tags, difficulty } = plant.value;
   const allFeatures = [
     // 对应 Wind
     { iconClass: 'icon-lucide-wind', label: '净化空气', active: tags.some(t => t.includes('净化')) },
@@ -659,6 +492,12 @@ const sharePlant = () => {
     }
   });
 };
+
+const handleAddPlant = () => {
+  uni.navigateTo({
+    url: '/pages-plants/plants/addPlants2/index?plantId=' + plantId.value
+  })
+}
 </script>
 
 <style scoped></style>

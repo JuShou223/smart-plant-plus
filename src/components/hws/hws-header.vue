@@ -1,7 +1,7 @@
 <!--
  * @Date: 2025-12-09 16:40:17
  * @LastEditors: 徐一鸣
- * @LastEditTime: 2025-12-11 16:10:42
+ * @LastEditTime: 2025-12-22 19:49:51
  * @Description:
 -->
 <template>
@@ -24,6 +24,14 @@ const props = defineProps({
   top: {
     type: String,
     default: '0px'
+  },
+  inNavbar: {
+    type: Boolean,
+    default: false
+  },
+  bgColor: {
+    type: String,
+    default: 'transparent'
   }
 });
 // 响应式宽度值
@@ -34,11 +42,12 @@ const pdRight = ref('0px');
 const containerStyle = computed(() => {
   return {
     width: containerWidth.value,
-    'box-sizing': 'border-box',
+    'box-sizing': 'content-box',
     'padding-right': pdRight.value,
     'position': props.absolute ? 'absolute' : 'relative',
     'left': props.left,
-    'top': props.top
+    'top': props.top,
+    'background-color': props.bgColor
   };
 });
 
@@ -46,7 +55,9 @@ const containerStyle = computed(() => {
 const calculateContainerWidth = () => {
   // 在 UniApp 中获取系统信息
   const systemInfo = uni.getSystemInfoSync();
-
+  console.log('系统信息:', systemInfo);
+  // 胶囊通常在右侧，所以计算右侧空间
+  const windowWidth = systemInfo.windowWidth;
   // 获取菜单按钮（胶囊）的位置信息
   let menuButtonInfo = {};
   try {
@@ -54,19 +65,18 @@ const calculateContainerWidth = () => {
   } catch (e) {
     // 如果获取失败，使用默认值或返回100%
     // console.warn('获取菜单按钮信息失败:', e);
-    containerWidth.value = '100vw';
+    containerWidth.value = `${windowWidth - (props.inNavbar ? 26 : 0)}px`;
     pdRight.value = '0px';
     return;
   }
 
-  // 胶囊通常在右侧，所以计算右侧空间
-  const screenWidth = systemInfo.screenWidth || systemInfo.windowWidth;
+
   const capsuleRight = menuButtonInfo.right || 0;
   // const capsuleWidth = menuButtonInfo.width || 0;
 
   // 如果没有胶囊信息或不在小程序环境，使用全屏
   if (!capsuleRight || capsuleRight <= 0) {
-    containerWidth.value = '100vw';
+    containerWidth.value = `${windowWidth - (props.inNavbar ? 26 : 0)}px`;
     pdRight.value = '0px';
     return;
   }
@@ -81,8 +91,8 @@ const calculateContainerWidth = () => {
   const finalWidth = Math.max(availableWidth - safeMargin, 0);
 
   // 设置宽度，使用px或vw单位
-  containerWidth.value = `${finalWidth}px`;
-  pdRight.value = Math.max(screenWidth - finalWidth, 0);;
+  containerWidth.value = `${finalWidth - (props.inNavbar ? 13 : 0)}px`;
+  pdRight.value = Math.max(windowWidth - finalWidth, 0) + 'px';
   // 或者使用vw单位：containerWidth.value = `${(finalWidth / screenWidth) * 100}vw`;
 };
 

@@ -14,28 +14,28 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "",
+        "navigationBarTitleText": "首页",
         "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/login/index",
       "style": {
-        "navigationBarTitleText": "",
+        "navigationBarTitleText": "登录",
         "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/login/register",
       "style": {
-        "navigationBarTitleText": "",
+        "navigationBarTitleText": "注册",
         "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/plantLibrary/index",
       "style": {
-        "navigationBarTitleText": "",
+        "navigationBarTitleText": "图鉴",
         "navigationStyle": "custom"
       }
     },
@@ -66,6 +66,7 @@
       "path": "pages/user/index",
       "style": {
         "navigationBarTitleText": "我的",
+        "navigationStyle": "custom",
         "enablePullDownRefresh": false,
         "app-plus": {
           "bounce": "none", // 将回弹属性关掉
@@ -354,7 +355,6 @@
           "path": "plants/treatmentList/index",
           "style": {
             "navigationBarTitleText": "我的治疗本", //页面头部标题
-            "navigationStyle": "",
             "enablePullDownRefresh": false,
             "app-plus": {
               "bounce": "none" // 将回弹属性关掉
@@ -394,6 +394,50 @@
           }
         },
         {
+          "path": "plants/diseaseRecords/index",
+          "style": {
+            "navigationBarTitleText": "诊断记录", //页面头部标题
+            // "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/diseaseRecordsDetail2/index",
+          "style": {
+            "navigationBarTitleText": "诊断详情", //页面头部标题
+            // "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/addSensor/index",
+          "style": {
+            "navigationBarTitleText": "添加设备", //页面头部标题
+            "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "plants/sensorDetail/index",
+          "style": {
+            "navigationBarTitleText": "添加设备", //页面头部标题
+            "navigationStyle": "custom",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
           "path": "tools/ai/AiDiagnose",
           "style": {
             "navigationBarTitleText": "AI智能诊断", //页面头部标题
@@ -401,6 +445,148 @@
             "app-plus": {
               "bounce": "none" // 将回弹属性关掉
             }
+          }
+        }
+      ]
+    },
+    {
+      "root": "pagesB",
+      "pages": [
+        {
+          "path": "user/about",
+          "meta": {
+            "title": "关于"
+          },
+          "style": {
+            "navigationBarTitleText": "关于",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "list/user/message",
+          "meta": {
+            "title": "最新消息"
+          },
+          "style": {
+            "navigationBarTitleText": "最新消息",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "list/user/messageDetail",
+          "meta": {
+            "title": "消息详情"
+          },
+          "style": {
+            "navigationBarTitleText": "消息详情",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "list/user/setting",
+          "meta": {
+            "title": "系统设置"
+          },
+          "style": {
+            "navigationBarTitleText": "系统设置",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+
+        {
+          "path": "user/account",
+          "meta": {
+            "title": "账号信息"
+          },
+          "style": {
+            "navigationBarTitleText": "账号信息",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "user/resetPsd",
+          "meta": {
+            "title": "密码修改"
+          },
+          "style": {
+            "navigationBarTitleText": "密码修改",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "user/avatar",
+          "meta": {
+            "title": "修改头像"
+          },
+          "style": {
+            "navigationBarTitleText": "修改头像",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "user/secureBind",
+          "meta": {
+            "title": "解除微信绑定"
+          },
+          "style": {
+            "navigationBarTitleText": "解除微信绑定",
+            "enablePullDownRefresh": false,
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "user/deviceGroup/index",
+          "meta": {
+            "title": "设备分组"
+          },
+          "style": {
+            "navigationBarTitleText": "设备分组",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "user/deviceGroup/detail",
+          "meta": {
+            "title": "编辑分组"
+          },
+          "style": {
+            "navigationBarTitleText": "编辑分组",
+            "app-plus": {
+              "bounce": "none" // 将回弹属性关掉
+            }
+          }
+        },
+        {
+          "path": "user/deviceGroup/devices",
+          "meta": {
+            "title": "设备列表"
+          },
+          "style": {
+            "navigationBarTitleText": "设备列表",
+            "enablePullDownRefresh": true
           }
         }
       ]

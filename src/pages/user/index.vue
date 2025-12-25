@@ -1,537 +1,564 @@
 <template>
-	<page-meta>
-		<navigation-bar title="个人中心" title-align="center" background-color="#2ecc71" />
-	</page-meta>
-	<view class="user-wrap">
-		<u-sticky offset-top="0">
-			<view class="account-wrap">
-				<view class="left-wrap">
-					<view class="img-wrap" @click="handleToAvatar">
-						<u--image :src="avatarUrl ? avatarUrl : '/static/avatar.png'" radius="5" width="50" height="50"></u--image>
-					</view>
-					<view class="title-wrap">
-						<view class="name-wrap" v-if="wxStatus">
-							<u-icon :label="profile.nickName" labelPos="left" labelSize="16" labelColor="#fff" space="10" bold
-								name="/static/wechat_bind.png" size="22" color="#fff" @click="handleUnbindWeChart"></u-icon>
-						</view>
-						<!-- #ifdef H5-->
-						<view class="name-wrap" v-if="!wxStatus">
-							<u-icon :label="profile.nickName" labelPos="left" labelSize="16" labelColor="#fff" space="10"
-								bold></u-icon>
-						</view>
-						<!-- #endif -->
-						<!-- #ifdef APP-PLUS || MP-WEIXIN-->
-						<view class="name-wrap" v-if="!wxStatus">
-							<u-icon :label="profile.nickName" labelPos="left" labelSize="16" labelColor="#fff" space="10" bold
-								name="/static/wechat_unbind.png" size="22" color="#fff" @click="handleBindWeChart"></u-icon>
-						</view>
-						<!-- #endif -->
-						<u--text text="蜂信物联-开源物联网平台" color="#fff" size="12"></u--text>
-					</view>
+	<view class="min-h-screen bg-slate-50 animate-fade-in relative z-50">
+
+		<view class="bg-emerald-600 h-64 relative overflow-hidden rounded-b-[2.5rem] shadow-lg shadow-emerald-200">
+			<view
+				class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none">
+			</view>
+			<view
+				class="absolute bottom-0 left-0 w-48 h-48 bg-teal-500/30 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none">
+			</view>
+
+			<view class="px-6 py-4 flex justify-between items-center relative z-10 text-white"
+				:style="{ paddingTop: safeAreaTop + 'px' }">
+				<!-- <button
+          class="p-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors backdrop-blur-md m-0 leading-none border-none">
+          <text class="leading-none iconfont icon-lucide-chevron-left text-2xl text-white"></text>
+        </button> -->
+				<text class="font-bold text-lg">个人中心</text>
+				<!-- <button class="p-2 hover:bg-white/20 rounded-full transition-colors m-0 leading-none bg-transparent">
+          <text class="leading-none iconfont icon-lucide-settings text-2xl text-white"></text>
+        </button> -->
+			</view>
+
+			<view class="px-6 pt-2 flex items-center gap-4 relative z-10">
+				<view
+					class="flex items-center justify-center w-20 h-20 rounded-full border-4 border-solid border-white/30 shadow-xl overflow-hidden bg-white shrink-0"
+					@click="handleToAvatar">
+					<!-- <text class="leading-none iconfont icon-lucide-sprout text-2xl text-emerald-600 leading-none"></text> -->
+					<image
+						:src="avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200&auto=format&fit=crop'"
+						mode="aspectFill" class="w-full h-full" />
 				</view>
-				<view class="right-wrap">
-					<u-icon name="arrow-right" color="#fff" size="20" @click="gotoAccount()"></u-icon>
+				<view class="text-white">
+					<text class="block text-2xl font-bold">{{ profile.nickName || 'Alex Gardener' }}</text>
+					<view class="flex items-center gap-2 mt-1">
+						<text
+							class="bg-emerald-700/50 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-bold border border-solid border-emerald-400/30"
+							@click="handleVipUpgrade">
+							{{ isVipModel ? 'VIP会员' : 'LV.5 资深园丁' }}
+						</text>
+						<text class="text-xs text-emerald-100 opacity-80">ID: {{ profile.userId || '884920' }}</text>
+					</view>
 				</view>
 			</view>
-		</u-sticky>
-
-		<view class="grid-wrap">
-			<u-grid :border="false" col="3">
-				<u-grid-item>
-					<u-icon name="/static/device_white.png" size="25" color="#fff" label="添加设备" labelPos="bottom" labelSize="11"
-						space="10rpx" @click="openTop"
-						customStyle="background-color:#f56c6c; border-radius:6rpx; padding:20rpx;"></u-icon>
-				</u-grid-item>
-
-				<u-grid-item>
-					<u-icon name="/static/group_white.png" size="25" label="分组管理" labelPos="bottom" labelSize="11" space="10rpx"
-						@click="gotoGroup()" customStyle="background-color:#f9ae3d; border-radius:6rpx; padding:20rpx;"></u-icon>
-				</u-grid-item>
-
-				<u-grid-item>
-					<u-icon name="/static/simulate.png" size="25" color="#fff" label="平台消息" labelPos="bottom" labelSize="11"
-						space="10rpx" @click="gotoEmulator()"
-						customStyle="background-color:#5ac725; border-radius:6rpx; padding:20rpx;"></u-icon>
-				</u-grid-item>
-			</u-grid>
 		</view>
 
-		<!-- 会员升级 -->
+		<view class="px-6 -mt-12 relative z-20 pb-4 space-y-6">
 
+			<view class="bg-white rounded-2xl p-6 shadow-xl shadow-slate-200/50 flex justify-between items-center">
+				<view class="text-center flex-1 border-r border-slate-100">
+					<text class="block text-2xl font-bold text-slate-800">342</text>
+					<text class="block text-xs text-slate-400 mt-1">种植天数</text>
+				</view>
+				<view class="text-center flex-1 border-r border-slate-100">
+					<text class="block text-2xl font-bold text-slate-800">12</text>
+					<text class="block text-xs text-slate-400 mt-1">我的植物</text>
+				</view>
+				<view class="text-center flex-1">
+					<text class="block text-2xl font-bold text-slate-800">5</text>
+					<text class="block text-xs text-slate-400 mt-1">诊断记录</text>
+				</view>
+			</view>
 
-		<view class="group-wrap">
-			<u-cell-group>
-				<u-cell title="账号" isLink @click="gotoAccount()" size="large">
-					<u-icon slot="icon" size="20" name="account" color="#2979ff"></u-icon>
-					<text slot="value"></text>
-				</u-cell>
-				<u-cell title="信息" isLink url="/pagesB/list/user/message" size="large">
-					<u-icon slot="icon" size="20" name="email" color="#5ac725"></u-icon>
-					<u-badge slot="value" :isDot="true" type="success"></u-badge>
-				</u-cell>
-				<!-- <u-cell title="设置" isLink url="/pages/tabBarB/user/setting" size="large">
-					<u-icon slot="icon" size="20" name="setting" color="#0b969d"></u-icon>
-					<text slot="value"></text>
-				</u-cell> -->
-				<!-- <u-cell title="手机监控" isLink url="/pagesB/tabBar/user/phone" size="large">
-					<u-icon slot="icon" size="20" name="star-fill" color="#14cfa9"></u-icon>
-					<text slot="value"></text>
-				</u-cell> -->
-				<u-cell title="密码修改" isLink @click="gotoResetPsd()" size="large">
-					<u-icon slot="icon" size="20" name="lock" color="#bdbd00"></u-icon>
-					<text slot="value"></text>
-				</u-cell>
-				<u-cell title="注销账号" isLink size="large" @click="handleUnsubscribe()">
-					<u-icon slot="icon" size="20" name="warning" color="#d3077b"></u-icon>
-				</u-cell>
-
-			</u-cell-group>
-		</view>
-
-		<view class="group-wrap">
-			<u-cell-group>
-				<u-cell title="关于" isLink url="/pagesB/user/about" size="large">
-					<u-icon slot="icon" size="20" name="info-circle" color="#0d5ce7"></u-icon>
-					<text slot="value"></text>
-				</u-cell>
-
-				<u-cell isLink size="large">
-					<u-link slot="title" href="https://gitee.com/kerwincui/wumei-smart/tree/master/app" text="APP下载"
-						color="#333"></u-link>
-					<u-icon slot="icon" size="20" name="download" color="#0d5ce7"></u-icon>
-					<text slot="value"></text>
-				</u-cell>
-			</u-cell-group>
-		</view>
-
-		<view style="margin-top:10px;"><u-button :plain="true" size="large" text="退出账号" @click="handleExit"></u-button>
-		</view>
-
-		<view class="other-wrap">
-			<u-modal :show="show" title="确认退出账号？" :showCancelButton="true" @cancel="cancelExit"
-				@confirm="confirmExit"></u-modal>
-			<u-popup :show="isTopShow" @close="closeTop" @open="openTop" mode="top" round="10">
-				<view style="padding:20px 0 10px 0;">
-					<u-grid :border="false" col="3">
-						<u-grid-item>
-							<u-icon name="/static/ap.png" size="25" color="#fff" label="配网添加" labelPos="bottom" labelSize="15"
-								space="10px" @click="gotoAddDevice()"
-								customStyle="background-color:#f56c6c;border-radius:3px;padding:10px;"></u-icon>
-						</u-grid-item>
-						<u-grid-item>
-							<u-icon name="/static/scan.png" size="25" label="扫码添加" labelPos="bottom" labelSize="15" space="10px"
-								@click="openScan" customStyle="background-color:#2ecc71;border-radius:3px;padding:10px;"></u-icon>
-						</u-grid-item>
-						<u-grid-item>
-							<u-icon name="/static/relate.png" size="25" label="关联添加" labelPos="bottom" labelSize="15" space="10px"
-								@click="gotoRelateDevice()"
-								customStyle="background-color:#f9ae3d;border-radius:3px;padding:10px;"></u-icon>
-						</u-grid-item>
-					</u-grid>
-					<view>
-						<u-row>
-							<u-col :span="4"><u--text type="info" text="适用于WIFI类型的设备" size="12"
-									customStyle="padding:10px 15px;"></u--text></u-col>
-							<u-col :span="4"><u--text type="info" text="适用于蜂窝网络/以太网类设备" size="12"
-									customStyle="padding:10px 15px;"></u--text></u-col>
-							<u-col :span="4"><u--text type="info" text="适用于蜂窝网络/以太网类设备,并支持批量操作" size="12"
-									customStyle="padding:10px 15px;"></u--text></u-col>
-						</u-row>
+			<view class="bg-white rounded-2xl p-5 shadow-sm border border-solid border-slate-100">
+				<view class="flex justify-between items-center mb-4">
+					<text class="font-bold text-slate-800 text-sm">我的订单</text>
+					<view class="text-xs text-slate-400 flex items-center hover:text-emerald-600">
+						<text>全部订单</text>
+						<text class="leading-none iconfont icon-lucide-chevron-right text-xs ml-0.5"></text>
 					</view>
 				</view>
-			</u-popup>
-			<u-modal :show="modal.show" :content="modal.content" @confirm="confirm" @cancel="cancel"
-				:showConfirmButton="modal.showConfirmButton" showCancelButton></u-modal>
-			<u-modal :show="isUnsubscribe" title="账户注销确认" content='账户注销后,所有信息将被清空,且无法恢复,您是否要注销？' cancelText="暂不注销"
-				confirmText="确认注销" :showCancelButton="true" confirmColor="#606266" cancelColor="#2979ff"
-				@cancel="isUnsubscribe = false" @confirm="confirmUnsubscribe"></u-modal>
-			<u-modal :show="isBindWeChart" title="微信绑定确认" content='您是否要绑定微信？' cancelText="暂不绑定" confirmText="确认绑定"
-				:showCancelButton="true" @cancel="isBindWeChart = false" @confirm="confirmBindWeChart"></u-modal>
+				<view class="flex justify-between px-2">
+					<view v-for="(item, idx) in orderItems" :key="idx" class="flex flex-col items-center gap-2 group">
+						<view
+							class="w-10 h-10 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-colors relative">
+							<text class="leading-none iconfont text-xl" :class="item.iconClass"></text>
+							<view v-if="idx === 1"
+								class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white text-[10px] flex items-center justify-center rounded-full border-2 border-white">
+								1
+							</view>
+						</view>
+						<text class="text-xs text-slate-600">{{ item.label }}</text>
+					</view>
+				</view>
+			</view>
+
+			<view class="bg-white rounded-2xl shadow-sm border border-solid border-slate-100 overflow-hidden">
+				<view @click="gotoAccount"
+					class="box-border w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-solid border-slate-50 cursor-pointer">
+					<view class="flex items-center gap-3">
+						<view class="p-2 bg-blue-50 text-blue-600 rounded-lg">
+							<text class="leading-none iconfont icon-lucide-user text-xl"></text>
+						</view>
+						<text class="text-sm font-bold text-slate-700">账号信息</text>
+					</view>
+					<text class="leading-none iconfont icon-lucide-chevron-right text-base text-slate-400"></text>
+				</view>
+
+				<view @click="gotoAddressList"
+					class="box-border w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-solid border-slate-50 cursor-pointer">
+					<view class="flex items-center gap-3">
+						<view class="p-2 bg-blue-50 text-blue-600 rounded-lg">
+							<text class="leading-none iconfont icon-lucide-map-pin text-xl"></text>
+						</view>
+						<text class="text-sm font-bold text-slate-700">地址管理</text>
+					</view>
+					<text class="leading-none iconfont icon-lucide-chevron-right text-base text-slate-400"></text>
+				</view>
+
+				<!-- <view @click="onNavigate('DIAGNOSIS_HISTORY')"
+          class="box-border w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-solid border-slate-50 cursor-pointer">
+          <view class="flex items-center gap-3">
+            <view class="p-2 bg-orange-50 text-orange-600 rounded-lg">
+              <text class="leading-none iconfont icon-lucide-clipboard-list text-xl"></text>
+            </view>
+            <text class="text-sm font-bold text-slate-700">植物诊断档案</text>
+          </view>
+          <text class="leading-none iconfont icon-lucide-chevron-right text-base text-slate-400"></text>
+        </view> -->
+
+				<view @click="gotoResetPsd"
+					class="box-border w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-solid border-slate-50 cursor-pointer">
+					<view class="flex items-center gap-3">
+						<view class="p-2 bg-purple-50 text-purple-600 rounded-lg">
+							<text class="leading-none iconfont icon-lucide-lock text-xl"></text>
+						</view>
+						<text class="text-sm font-bold text-slate-700">修改密码</text>
+					</view>
+					<text class="leading-none iconfont icon-lucide-chevron-right text-base text-slate-400"></text>
+				</view>
+
+				<!-- <view @click="handleBindWeChart"
+          class="box-border w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-solid border-slate-50 cursor-pointer">
+          <view class="flex items-center gap-3">
+            <view class="p-2 bg-green-50 text-green-600 rounded-lg">
+              <text class="leading-none iconfont icon-lucide-link text-xl"></text>
+            </view>
+            <text class="text-sm font-bold text-slate-700">{{ wxStatus ? '解绑微信' : '绑定微信' }}</text>
+          </view>
+          <text class="leading-none iconfont icon-lucide-chevron-right text-base text-slate-400"></text>
+        </view> -->
+
+				<!-- <view
+          class="box-border w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors cursor-pointer">
+          <view class="flex items-center gap-3">
+            <view class="p-2 bg-teal-50 text-teal-600 rounded-lg">
+              <text class="leading-none iconfont icon-lucide-help-circle text-xl"></text>
+            </view>
+            <text class="text-sm font-bold text-slate-700">帮助与反馈</text>
+          </view>
+          <text class="leading-none iconfont icon-lucide-chevron-right text-base text-slate-400"></text>
+        </view> -->
+
+			</view>
+
+			<button @click="handleExit"
+				class="w-full py-4 bg-slate-100 text-slate-500 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-rose-50 hover:text-rose-600 transition-colors m-0 border-none">
+				<text class="leading-none iconfont icon-lucide-log-out text-xl"></text>
+				<text>退出登录</text>
+			</button>
+
+			<button @click="handleUnsubscribe"
+				class="w-full py-4 bg-slate-50 text-slate-400 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-rose-50 hover:text-rose-600 transition-colors m-0 border-none mt-2">
+				<text class="leading-none iconfont icon-lucide-trash-2 text-xl"></text>
+				<text>注销账户</text>
+			</button>
+
+			<text class="block text-center text-[10px] text-slate-300 pt-4 pb-4">
+				猴卫士智能养植 v1.0.0 • Build 20251231
+			</text>
 		</view>
+
+		<view v-if="modal.show" class="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center">
+			<view class="bg-white p-6 rounded-lg w-80">
+				<text class="block text-lg font-bold mb-4">提示</text>
+				<text class="block mb-6">{{ modal.content }}</text>
+				<view class="flex justify-end gap-4">
+					<button @click="cancel" class="px-4 py-2 bg-slate-200 rounded">取消</button>
+					<button v-if="modal.showConfirmButton" @click="confirm"
+						class="px-4 py-2 bg-emerald-600 text-white rounded">确定</button>
+				</view>
+			</view>
+		</view>
+
+		<view v-if="show" class="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center">
+			<view class="bg-white p-6 rounded-lg w-80">
+				<text class="block text-lg font-bold mb-4">退出确认</text>
+				<text class="block mb-6">确定要退出登录吗？</text>
+				<view class="flex justify-end gap-4">
+					<button @click="cancelExit" class="px-4 py-2 bg-slate-200 rounded">取消</button>
+					<button @click="confirmExit" class="px-4 py-2 bg-emerald-600 text-white rounded">确定</button>
+				</view>
+			</view>
+		</view>
+
+		<view v-if="isUnsubscribe" class="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center">
+			<view class="bg-white p-6 rounded-lg w-80">
+				<text class="block text-lg font-bold mb-4">注销确认</text>
+				<text class="block mb-6 text-red-500">注销后账号无法找回，确定要注销吗？</text>
+				<view class="flex justify-end gap-4">
+					<button @click="isUnsubscribe = false" class="px-4 py-2 bg-slate-200 rounded">取消</button>
+					<button @click="confirmUnsubscribe" class="px-4 py-2 bg-red-600 text-white rounded">确定</button>
+				</view>
+			</view>
+		</view>
+
+		<vip-model v-if="isVipModel" @close="isVipModel = false"></vip-model>
+
 	</view>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useUserStore } from '@/stores/user';
 import projectConfig from '@/env.config.js';
 import vipModel from '@/components/model/vip-model.vue';
-import { logout, secureBind, wechatBind } from '@/apis/modules/common';
+import { logout, secureBind, wechatBind, getProfile as getProfileApi } from '@/apis/modules/common';
 import { deviceRelateUser } from '@/apis/modules/device';
 
-export default {
-	components: {
-		vipModel
-	},
-	data() {
-		return {
-			avatarUrl: '', // 头像
-			// 扫码模态窗
-			modal: {
-				show: false,
-				showConfirmButton: false,
-				content: ''
-			},
-			wxStatus: false,
-			scanJson: {}, // 扫码获取的Json
-			// 退出模态窗
-			show: false,
-			isTopShow: false, // 顶部弹出层
-			isUnsubscribe: false, // 是否注销账号
-			isBindWeChart: false, // 是否绑定微信
-			isVipModel: false, // 是否会员升级
-		};
-	},
-	onShow() {
-		this.getProfile();
-	},
-	methods: {
-		// 退出系统
-		handleExit() {
-			this.show = true;
-		},
-		// 取消退出系统
-		cancelExit() {
-			this.show = false;
-		},
-		// 确认退出系统
-		confirmExit() {
-			logout().then(() => {
-				this.clearToken();
-				// 跳转
-				uni.reLaunch({
-					url: '/pages/login/index'
-				});
-			});
-		},
-		//移动端微信解绑
-		handleAppSecureBind() {
-			uni.navigateTo({
-				url: '/pagesB/user/secureBind'
-			});
-		},
-		gotoAccount() {
-			uni.$u.route('/pagesB/user/account');
-		},
-		// 添加设备
-		gotoAddDevice() {
-			this.isTopShow = false;
-			uni.navigateTo({
-				url: '/pagesA/list/home/deviceAdd'
-			});
-		},
-		// 关联设备
-		gotoRelateDevice() {
-			this.isTopShow = false;
-			uni.navigateTo({
-				url: '/pagesA/list/home/deviceRelate'
-			});
-		},
-		gotoEmulator() {
-			uni.navigateTo({
-				url: '/pagesB/list/user/message'
-			});
-		},
+const emit = defineEmits(['back', 'logout', 'navigate']);
+const userStore = useUserStore();
 
-		//设备分组
-		gotoGroup() {
-			uni.navigateTo({
-				url: '/pagesB/user/deviceGroup/index'
-			});
-		},
-		// 清除token
-		clearToken() {
-			uni.setStorageSync('token', '');
-		},
-		getProfile() {
-			// 调用用户信息接口
-			this.$api.common.getProfile().then(res => {
-				//存储用户信息,TODO 需要调用一次，不然其他页面调用返回空
-				uni.$u.vuex('profile', res.data);
-				this.avatarUrl = this.profile.avatar && projectConfig.baseUrl + this.profile.avatar;
-				this.wxStatus = res.wxBind;
-			}).catch(err => {
-				this.$u.toast(err.msg);
-			});
-		},
-		// 打开顶部弹窗
-		openTop() {
-			this.isTopShow = true;
-		},
-		// 关闭顶部弹窗
-		closeTop() {
-			this.isTopShow = false;
-		},
-		/***************************************扫码关联设备***********************************************/
-		// 模态窗确定
-		confirm() {
-			this.cancel();
-			let form = {
-				deviceNumberAndProductIds: [{
-					deviceNumber: this.scanJson.deviceNumber,
-					productId: this.scanJson.productId
-				}],
-				userId: this.profile.userId
-			};
-			deviceRelateUser(form).then(res => {
-				if (res.code == 200) {
-					uni.showToast({
-						icon: 'success',
-						title: '保存成功'
-					});
-					this.isTopShow = false;
-				} else {
-					this.modal = {
-						show: true,
-						showConfirmButton: false,
-						content: '发生错误：' + res.msg
-					};
-				}
-			});
-		},
-		// 模态窗取消
-		cancel() {
-			this.modal = {
-				show: false,
-				showConfirmButton: false,
-				content: ''
-			};
-		},
-		// 扫码
-		openScan() {
-			// #ifndef MP-WEIXIN || APP-PLUS
-			uni.showToast({
-				icon: 'none',
-				title: '扫码只支持App和小程序'
-			});
-			return;
-			// #endif
-
-			// 允许从相机和相册扫码
-			uni.scanCode({
-				success: res => {
-					console.log('条码类型：' + res.scanType);
-					console.log('条码内容：' + res.result);
-					if (res.result.substr(0, 1) != '{') {
-						console.log('坑点：解析二维码后第一个位置包含一个特殊字符，大部分编译器和调试工具识别不了这个特殊字符');
-						res.result = res.result.substring(1);
-					}
-					// 解析JSON
-					try {
-						this.scanJson = JSON.parse(res.result);
-						// type=1 代表扫码关联设备
-						if (this.scanJson.type == 1) {
-							this.modal = {
-								show: true,
-								showConfirmButton: true,
-								content: '【设备编号:' + this.scanJson.deviceNumber + ', 产品名称:' + this
-									.scanJson.productName + '】确定添加吗？'
-							};
-							return;
-						}
-						uni.showToast({
-							icon: 'none',
-							title: '解析二维码后，找不到对应处理类型'
-						});
-					} catch (error) {
-						uni.showToast({
-							icon: 'none',
-							title: '解析二维码错误，格式不正确'
-						});
-					}
-				}
-			});
-		},
-		// 注销账户
-		handleUnsubscribe() {
-			this.isUnsubscribe = true;
-		},
-		//跳转密码修改
-		gotoResetPsd() {
-			/*uni.navigateTo({
-				url:"/pagesB/user/resetPsd"
-			})*/
-			uni.$u.route('/pagesB/user/resetPsd');
-		},
-		confirmUnsubscribe() {
-			logout().then(() => {
-				this.clearToken();
-				// 跳转
-				uni.reLaunch({
-					url: '/pages/login/index'
-				});
-			});
-		},
-		//跳转个人信息
-		handleToAvatar() {
-			const source = {
-				album: '从手机相册选择',
-				camera: '拍照',
-			};
-			const success = ({ tempFilePaths: a, tempFiles: b }) => {
-				const image = a ? a[0] : b[0].path;
-				uni.$u.route('/pagesB/user/avatar', { url: image });
-			};
-			const _uploadImage = (type) => {
-				const sizeType = ['original', 'compressed'];
-				uni.chooseImage({
-					count: 1,
-					sizeType,
-					sourceType: [type],
-					success
-				});
-			}
-			const list = Object.entries(source);
-			// #ifdef H5
-			_uploadImage(list[0][0]);
-			return;
-			// #endif
-			uni.showActionSheet({
-				itemList: list.map(v => v[1]),
-				success: async ({ tapIndex: i }) => {
-					// #ifdef APP-PLUS
-					const permissionID = list[i][0] === 'album' ? 'READ_EXTERNAL_STORAGE' : 'CAMERA';
-					let result = await this.$store.dispatch("permission/requestPermissions", permissionID);
-					if (result !== 1) return;
-					// #endif
-					_uploadImage(list[i][0]);
-				}
-			});
-		},
-		// 开通会员
-		handleVipUpgrade() {
-			this.isVipModel = true;
-		},
-		// 解绑微信
-		handleUnbindWeChart() {
-			uni.navigateTo({
-				url: '/pagesB/user/secureBind'
-			});
-		},
-		// 绑定微信
-		handleBindWeChart() {
-			this.isBindWeChart = true;
-		},
-		confirmBindWeChart() {
-			this.isBindWeChart = false;
-			let that = this;
-			uni.login({
-				provider: 'weixin',
-				success: function (res) {
-					if (res) {
-						console.log('用户授权成功');
-						// #ifdef APP-PLUS
-						const params = {
-							sourceClient: 'wechat_open_mobile',
-							openId: res.authResult.openid,
-							unionId: res.authResult.unionid,
-						}
-						// #endif
-						// #ifdef MP-WEIXIN
-						const params = {
-							code: res.code,
-							sourceClient: 'wechat_open_mini_program',
-						}
-						// #endif
-						wechatBind(params).then(res => {
-							if (res.code == 200) {
-								uni.showToast({
-									icon: 'none',
-									title: '绑定成功！',
-								});
-								that.getProfile();
-							} else {
-								uni.$u.toast(res.msg);
-							}
-						}).catch(err => {
-							console.log(err);
-						});
-					}
-				}
-			})
+// Safe Area
+const safeAreaTop = ref(44);
+onMounted(() => {
+	try {
+		const res = uni.getSystemInfoSync();
+		if (res.safeAreaInsets && res.safeAreaInsets.top) {
+			safeAreaTop.value = res.safeAreaInsets.top;
 		}
+	} catch (e) {
+		console.error(e);
 	}
-};
-</script>
 
-<style lang="scss">
-page {
-	background: #eef3f7;
+	// Fetch profile on mount
+	getProfile();
+});
+
+// Data
+const orderItems = [
+	{ label: '待付款', iconClass: 'icon-lucide-credit-card' },
+	{ label: '待发货', iconClass: 'icon-lucide-package' },
+	{ label: '待收货', iconClass: 'icon-lucide-truck' },
+	{ label: '待评价', iconClass: 'icon-lucide-message-circle' },
+];
+
+// Reactive State
+const avatarUrl = ref('');
+const modal = ref({
+	show: false,
+	showConfirmButton: false,
+	content: ''
+});
+const wxStatus = ref(false);
+const scanJson = ref({});
+const show = ref(false);
+const isTopShow = ref(false);
+const isUnsubscribe = ref(false);
+const isBindWeChart = ref(false);
+const isVipModel = ref(false);
+const profile = ref({});
+
+// Methods
+
+// 获取用户信息
+const getProfile = () => {
+	getProfileApi().then(res => {
+		userStore.setProfile(res.data);
+		profile.value = res.data;
+		avatarUrl.value = profile.value.avatar && projectConfig.baseUrl + profile.value.avatar;
+		wxStatus.value = res.wxBind;
+	}).catch(err => {
+		uni.showToast({ title: err.msg || '获取用户信息失败', icon: 'none' });
+	});
+};
+
+const handleExit = () => {
+	show.value = true;
+};
+
+const cancelExit = () => {
+	show.value = false;
+};
+
+const clearToken = () => {
+	uni.setStorageSync('token', '');
+};
+
+const confirmExit = () => {
+	logout().then(() => {
+		clearToken();
+		uni.reLaunch({
+			url: '/pages/login/index'
+		});
+	});
+};
+
+const handleAppSecureBind = () => {
+	uni.navigateTo({
+		url: '/pagesB/user/secureBind'
+	});
+};
+
+const gotoAddressList = () => {
+	uni.navigateTo({ url: '/pages-plants/plants/addressList/addressList' });
 }
 
-.user-wrap {
-	padding-bottom: 200rpx;
-	background: #eef3f7;
+const gotoAccount = () => {
+	uni.navigateTo({ url: '/pagesB/user/account' });
+};
 
-	.account-wrap {
-		display: flex;
-		flex-direction: row;
-		background-color: #2ecc71;
-		align-items: center;
-		justify-content: space-between;
+const gotoAddDevice = () => {
+	isTopShow.value = false;
+	uni.navigateTo({
+		url: '/pagesA/list/home/deviceAdd'
+	});
+};
 
-		.left-wrap {
-			flex: 1;
-			display: flex;
-			flex-direction: row;
-			align-items: center;
-			padding: 20px;
+const gotoRelateDevice = () => {
+	isTopShow.value = false;
+	uni.navigateTo({
+		url: '/pagesA/list/home/deviceRelate'
+	});
+};
 
-			.img-wrap {}
+const gotoEmulator = () => {
+	uni.navigateTo({
+		url: '/pagesB/list/user/message'
+	});
+};
 
-			.title-wrap {
-				display: flex;
-				flex-direction: column;
-				margin-left: 24rpx;
+const gotoGroup = () => {
+	uni.navigateTo({
+		url: '/pagesB/user/deviceGroup/index'
+	});
+};
 
-				.name-wrap {
-					flex: 1;
-					display: flex;
-					flex-direction: row;
-					margin-bottom: 15rpx;
+const openTop = () => {
+	isTopShow.value = true;
+};
+
+const closeTop = () => {
+	isTopShow.value = false;
+};
+
+const cancel = () => {
+	modal.value = {
+		show: false,
+		showConfirmButton: false,
+		content: ''
+	};
+};
+
+const confirm = () => {
+	cancel();
+	let form = {
+		deviceNumberAndProductIds: [{
+			deviceNumber: scanJson.value.deviceNumber,
+			productId: scanJson.value.productId
+		}],
+		userId: profile.value.userId
+	};
+	deviceRelateUser(form).then(res => {
+		if (res.code == 200) {
+			uni.showToast({
+				icon: 'success',
+				title: '保存成功'
+			});
+			isTopShow.value = false;
+		} else {
+			modal.value = {
+				show: true,
+				showConfirmButton: false,
+				content: '发生错误：' + res.msg
+			};
+		}
+	});
+};
+
+const openScan = () => {
+	// #ifndef MP-WEIXIN || APP-PLUS
+	uni.showToast({
+		icon: 'none',
+		title: '扫码只支持App和小程序'
+	});
+	// #endif
+	// #ifdef MP-WEIXIN || APP-PLUS
+	uni.scanCode({
+		success: res => {
+			console.log('条码类型：' + res.scanType);
+			console.log('条码内容：' + res.result);
+			let resultStr = res.result;
+			if (resultStr.substr(0, 1) != '{') {
+				resultStr = resultStr.substring(1);
+			}
+			try {
+				scanJson.value = JSON.parse(resultStr);
+				if (scanJson.value.type == 1) {
+					modal.value = {
+						show: true,
+						showConfirmButton: true,
+						content: '【设备编号:' + scanJson.value.deviceNumber + ', 产品名称:' + scanJson.value.productName + '】确定添加吗？'
+					};
+					return;
 				}
+				uni.showToast({
+					icon: 'none',
+					title: '解析二维码后，找不到对应处理类型'
+				});
+			} catch (error) {
+				uni.showToast({
+					icon: 'none',
+					title: '解析二维码错误，格式不正确'
+				});
 			}
 		}
+	});
+	// #endif
+};
 
-		.right-wrap {
-			padding: 40rpx;
+const handleUnsubscribe = () => {
+	isUnsubscribe.value = true;
+};
+
+const gotoResetPsd = () => {
+	uni.navigateTo({ url: '/pagesB/user/resetPsd' });
+};
+
+const confirmUnsubscribe = () => {
+	logout().then(() => {
+		clearToken();
+		uni.reLaunch({
+			url: '/pages/login/index'
+		});
+	});
+};
+
+const handleToAvatar = () => {
+	const source = {
+		album: '从手机相册选择',
+		camera: '拍照',
+	};
+
+	const success = (res) => {
+		const tempFilePaths = res.tempFilePaths;
+		const image = tempFilePaths ? tempFilePaths[0] : res.tempFiles[0].path;
+		uni.navigateTo({
+			url: `/pagesB/user/avatar?url=${image}`
+		});
+	};
+
+	const _uploadImage = (type) => {
+		const sizeType = ['original', 'compressed'];
+		uni.chooseImage({
+			count: 1,
+			sizeType,
+			sourceType: [type],
+			success
+		});
+	}
+
+	const list = Object.entries(source);
+	// #ifdef H5
+	_uploadImage(list[0][0]);
+	return;
+	// #endif
+
+	uni.showActionSheet({
+		itemList: list.map(v => v[1]),
+		success: ({ tapIndex: i }) => {
+			// Note: Permissions handling for APP-PLUS might need specific plugin or API
+			// dispatching to store is one way if you have that setup
+			_uploadImage(list[i][0]);
 		}
+	});
+};
+
+const handleVipUpgrade = () => {
+	isVipModel.value = true;
+};
+
+const handleUnbindWeChart = () => {
+	uni.navigateTo({
+		url: '/pagesB/user/secureBind'
+	});
+};
+
+const handleBindWeChart = () => {
+	if (wxStatus.value) {
+		handleUnbindWeChart();
+	} else {
+		isBindWeChart.value = true;
+		confirmBindWeChart();
 	}
+};
 
-	.grid-wrap {
-		background-color: #ffffff;
-		padding: 40rpx;
-	}
-
-	.vip-wrap {
-		margin: 20rpx 0;
-
-		.vip {
-			display: flex;
-			flex-direction: row;
-			padding: 20rpx 40rpx;
-			align-items: center;
-			background-color: #ffffff;
-
-			.left {
-				flex: 1;
+const confirmBindWeChart = () => {
+	isBindWeChart.value = false;
+	uni.login({
+		provider: 'weixin',
+		success: function (res) {
+			if (res) {
+				console.log('用户授权成功');
+				let params = {};
+				// #ifdef APP-PLUS
+				params = {
+					sourceClient: 'wechat_open_mobile',
+					openId: res.authResult.openid,
+					unionId: res.authResult.unionid,
+				}
+				// #endif
+				// #ifdef MP-WEIXIN
+				params = {
+					code: res.code,
+					sourceClient: 'wechat_open_mini_program',
+				}
+				// #endif
+				wechatBind(params).then(res => {
+					if (res.code == 200) {
+						uni.showToast({
+							icon: 'none',
+							title: '绑定成功！',
+						});
+						getProfile();
+					} else {
+						uni.showToast({ title: res.msg, icon: 'none' });
+					}
+				}).catch(err => {
+					console.log(err);
+				});
 			}
 		}
+	})
+};
+
+const onBack = () => emit('back');
+const onLogout = handleExit;
+const onNavigate = (view) => emit('navigate', view);
+
+</script>
+
+<style scoped>
+/* leading-none iconfont Helper */
+.leading-none iconfont {
+	display: inline-block;
+	line-height: 1;
+}
+
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
 	}
 
-	.group-wrap {
-		background-color: #ffffff;
-		margin-top: 20rpx;
+	to {
+		opacity: 1;
+		transform: translateY(0);
 	}
+}
 
-	.other-wrap {
-		.popup-title {
-			margin: 20px 20px;
-		}
-
-		.btnclass {
-			margin: 0px 20px 20px 20px;
-			border-radius: 10px;
-		}
-	}
-
+.animate-fade-in {
+	animation: fadeInUp 0.3s ease-out;
 }
 </style>
